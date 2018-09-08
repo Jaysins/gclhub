@@ -1,4 +1,4 @@
-# myregApp
+# myRegApp
 This is a simple web app that allows users of the GCL Hub easily make payment for using the facilities of the hub.
 
 ### Technologies
