@@ -1,20 +1,12 @@
-go to your work folder
+# myregApp
+This is a simple web app that allows users of the GCL Hub easily make payment for using the facilities of the hub.
 
-open command prompt
+### Technologies
+* Back-end: Flask
+* Frot-end: Vanilla Javascript
 
-type in:
-
-git clone https://github.com/Jaysins/gclhub.git
-
-go into the gclhub directory
-
-open command prompt
-
-git branch workhub
-
-then you can work on your files
-
-when you done
-
-git push origin workhub
+### Contribution
+* Clone the repo by typing: `git clone https://github.com/Jaysins/gclhub.git`
+* `cd` into the directory and create a featue branch.
+* When done working on your feature branch create a pull request to the **Development** branch.
 
