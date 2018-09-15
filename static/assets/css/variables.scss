@@ -1,0 +1,49 @@
+$nav-height: 120px;
+
+$fontsize: (
+	heading: 2.2em,
+	subheading: 1.1em
+);
+
+$desktop: 1100px;
+$tablet: 800px;
+$mobile: 470px;
+
+@mixin desktop {
+	@media (min-width: #{$tablet}) {
+		@content;
+	}
+}
+@mixin tablet {
+	@media (max-width: #{$tablet}) {
+		@content;
+	}
+}
+@mixin mobile {
+	@media (max-width: #{$mobile}) {
+		@content;
+	}
+}
+
+$bg: (
+	primary: #1f4b99,
+	secondary: #f1f1f1,
+	dark: #111226,
+	red: rgb(196, 62, 13)
+);
+$text: (
+	light: #dfdfdf,
+	dark: rgb(82, 82, 82),
+	red: orangered
+);
+@function bgcolor($color) {
+	@return map-get($bg, $color);
+}
+
+@function textcolor($color) {
+	@return map-get($text, $color);
+}
+
+@function font($font) {
+	@return map-get($fontsize, $font);
+}

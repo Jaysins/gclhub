@@ -1,0 +1,49 @@
+{% extends 'base.html' %}
+{% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='assets/css/dashboard.css')}}">
+{% endblock %}
+
+{% block body %}
+
+{% include 'user.html' %}
+
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container">
+        <div class="profile">
+            <div class="left">
+                <div class="header">
+                    <div class="image">
+                        <img src="{{url_for('static', filename='assets/images/bg.jpg')}}" alt="">
+                    </div>
+                </div>
+                <div class="info">
+                    <h4 class="name">{{user}}</h4>
+                    <p class="text"> Current Plan: {{account.plan}}
+                        <br>
+                        {% if account.plan == None %}
+                        Please subscribe to a<a href="{{url_for('dashboard')}}"> plan</a>
+                        {% elif account.verified == False %}
+                        Account Status: Processing
+                        {% else %}
+                        Account Status: ACTIVE
+                        Subscribed Date: {{account.sub_date}}
+                        <br>
+                        Due Date: {{account.due_date}}
+                        {% endif %}
+                        .</p>
+                </div>
+            </div>
+            <div class="right">
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %}
+
+{% block script %}
+<script src="{{url_for('static', filename='assets/js/dashboard.js')}}"></script>
+
+{% endblock %}

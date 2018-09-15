@@ -1,0 +1,34 @@
+# coding=utf-8
+"""
+Models
+"""
+# noinspection PyUnresolvedReferences
+
+from app import db
+import datetime
+from flask_login import UserMixin
+
+
+class User(UserMixin, db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    name = db.Column(db.String(115), unique=True)
+    email = db.Column(db.String(115), unique=True)
+    password = db.Column(db.String(120))    
+
+
+class Account(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    plan = db.Column(db.String(100), default=None)
+    sub_date = db.Column(db.DateTime, default=datetime.datetime.now())
+    due_date = db.Column(db.DateTime, default=datetime.datetime.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
+    verified = db.Column(db.Boolean, default=False)
+    reference = db.Column(db.String(100), default='')
+
+
+class History(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    plan = db.Column(db.String(100), default=None)
+    sub_date = db.Column(db.DateTime, default=datetime.datetime.now())
+    due_date = db.Column(db.DateTime, default=datetime.datetime.now())
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
