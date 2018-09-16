@@ -1,0 +1,55 @@
+{% extends 'base.html' %}
+
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% include 'user.html' %}
+
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="container">
+            <h3 class="section-title">Requests</h3>
+            <div class="intro offers">
+                <section class="offer">
+                    <header>
+                        <h3 class="title">Name: John Doe </h3>
+                        <br>
+                        <span class="subtitle">Email Address:johndoe@ssks.com </span>
+                        <br>
+                        <span class="subtitle">Plan: Conference Room </span>
+                        <br>
+                    </header>
+                    <button class="subscribe">Verify Payment<i class="fas fa-chevron-right"></i></button>
+                </section>
+            </div>
+            <br><br>
+            <h3 class="section-title">Approved Requests</h3>
+            <div class="offers">
+                <section class="offer">
+                    <header>
+                        <h3 class="title">Name: John Doc </h3>
+                        <span class="subtitle">Email address: </span>
+                        <br>
+                        <span class="subtitle">Approved date:12203 </span>
+                        <br>
+                        <span class="subtitle">Due date:1111 </span>
+                        <br>
+                    </header>
+                    <div class="price">
+                        <div class="amount">Plan: nest </div>
+                    </div>
+{#                    <button class="subscribe">Delete <i class="fas fa-chevron-right"></i></button>#}
+                </section>
+        </div>
+
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+{% endblock %}

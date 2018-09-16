@@ -12,8 +12,3 @@ from views import *
 
 if __name__ == '__main__':
     app.run()
-                # $.getJSON('https://api.paystack.co/transaction/verify/' + response.reference, {
-                #     id: ''
-                # }, function (data) {
-                #     console.log(data)
-                # })

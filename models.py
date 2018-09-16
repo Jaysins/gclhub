@@ -10,6 +10,9 @@ from flask_login import UserMixin
 
 
 class User(UserMixin, db.Model):
+    """
+    class User
+    """
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(115), unique=True)
     email = db.Column(db.String(115), unique=True)
@@ -17,6 +20,9 @@ class User(UserMixin, db.Model):
 
 
 class Account(db.Model):
+    """
+    class Account
+    """
     id = db.Column(db.Integer, primary_key=True)
     plan = db.Column(db.String(100), default=None)
     sub_date = db.Column(db.DateTime, default=datetime.datetime.now())
@@ -27,6 +33,9 @@ class Account(db.Model):
 
 
 class History(db.Model):
+    """
+    class History
+    """
     id = db.Column(db.Integer, primary_key=True)
     plan = db.Column(db.String(100), default=None)
     sub_date = db.Column(db.DateTime, default=datetime.datetime.now())
