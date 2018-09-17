@@ -82,7 +82,8 @@ def dashboard():
     user = User.query.filter_by(name=current_user.name).first()
     user_data = {'username': user.name, 'email': user.email}
     check_account = Account.query.filter_by(user_id=user.id).first()
-    history = History.query.filter_by(user_id=user.id).all()
+    print(user.id)
+    history = History.query.filter_by(user_id=user.id).all()    
     print(history)
     return render_template('dashboard.html', user=json.dumps(user_data),
                            subscribed=check_account.plan if check_account is not None else 'None', history=history)
@@ -107,7 +108,8 @@ def admin():
         pending_users.append(User.query.filter_by(id=account.user_id).first())
     for account in approved:
         approved_users.append(User.query.filter_by(id=account.user_id).first())
-    return render_template('admin.html', pending_users=pending_users, pending=pending)
+    return render_template('admin.html', pending_users=pending_users, pending=pending, 
+    approved_users=approved_users, approved=approved)
 
 
 @app.route('/receive_ref')
@@ -134,7 +136,13 @@ def approved():
     get_account.sub_date = datetime.datetime.now()
     get_account.due_date = datetime.datetime.now()
     
-    history = History(plan=get_account.plan, sub_date=get_account.sub_date, due_date=get_account.due_date, user_id=get_account.user_id)
+    history = History(plan=get_account.plan, sub_date=get_account.sub_date, due_date=get_account.due_date, user_id=get_account.user_id)    
     db.session.add(history)
     db.session.commit()
     return jsonify({'response': 'success'})
+
+
+@app.route('/logout')
+def logout():
+    logout_user()
+    return redirect(url_for('index'))

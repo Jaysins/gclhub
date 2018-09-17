@@ -13,7 +13,7 @@ class RegisterForm(FlaskForm):
     """
     Register
     """
-    username = StringField('Name', validators=[InputRequired(), Length(min=4, max=15)])
+    name = StringField('Name', validators=[InputRequired(), Length(min=4, max=15)])
     email = StringField('Email', validators=[InputRequired(), Email(message='invalid email'), Length(max=50)])
     # number = StringField('Number', validators=[InputRequired(), Length(min=4, max=15)])
     password = PasswordField('Password', [
