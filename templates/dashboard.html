@@ -14,17 +14,31 @@
         <div class="container">
             <h3 class="section-title">Subscription History</h3>
             <div class="intro offers">
+                {% if history|length < 1 %}
+                    <section class="offer">
+                        <header>
+                            <h3 class="title">No History </h3>
+                            <span class="subtitle"> </span>
+                        </header>
+                    </section>
+                {% else %}
+
+                {% for data in history %}
                 <section class="offer">
                     <header>
-                        <h3 class="title">Plan: Conference Room </h3>
-                        <span class="subtitle">Sub Date: 3rd August 1993 12:15pm </span>
+                        <h3 class="title">Plan: {{data.plan}} </h3>
+                        <span class="subtitle">Sub Date: {{data.sub_date}} </span>
                         <br>
-                        <span class="subtitle">Due Date:5rd August 1993 12:15pm </span>
+                        <span class="subtitle">Due Date:{{data.due_date}} </span>
                     </header>
-                    <div class="price">
-                        <div class="amount">Price: 10000 </div>
-                    </div>
+
+{#                    <div class="price">
+                        <div class="amount">Amount Paid: {{data.paid}} </div>
+                    </div>#}
+
                 </section>
+                {% endfor %}
+            {% endif %}
 {##}
 {#            <!-- <section class="offer">#}
 {#                <header>#}
@@ -84,7 +98,7 @@
                 </section>
                 <section class="offer">
                     <header>
-                        <h3 class="title"> Dedicated Suites</h3>
+                        <h3 class="title"> Dedicated Suite </h3>
                         <span class="subtitle">Small Team</span>
                     </header>
                     <div class="price">
@@ -126,8 +140,12 @@
         var subscribed = '{{subscribed}}';
         if (subscribed !== 'None') {
             var offers = $('.offer');
+            console.log(subscribed)
             for (var i = 0; i < offers.length; i++) {
-                if (offers[i].children[0].children[0].innerText === subscribed) {
+
+                if ((offers[i].children[0].children[0].innerText === subscribed) || (offers[i].children[0].children[1].innerText === subscribed)) {
+                    console.dir(offers[i])
+                    console.log(offers[i].children[2])
                     offers[i].children[2].disabled = 'true';
                     offers[i].children[2].className += ' subscribed';
                     offers[i].children[2].innerText = 'Subscribed';
@@ -145,8 +163,15 @@
             var user = JSON.parse({{user|tojson}});
             var subscribe_btn = $(".subscribe");
             subscribe_btn.click(function () {
-                console.dir(this);
+                console.dir(this);                
                 var plan = this;
+                var planName;
+                if (this.parentElement.children[0].children[1].innerText === ''){
+                    planName = this.parentElement.children[0].children[0].innerText;
+                }
+                else{
+                    planName = this.parentElement.children[0].children[1].innerText;
+                }             
                 var amount = this.previousElementSibling.childNodes[1].innerText;
                 amount = amount.replace('N', '');
                 var handler = PaystackPop.setup({
@@ -168,7 +193,7 @@
                                 .port +
                             '/receive_ref', {
                                 reference: response.reference,
-                                plan: plan.parentElement.children[0].innerText
+                                plan: planName
                             },
                             function (data) {
                                 plan.disabled = 'true';
