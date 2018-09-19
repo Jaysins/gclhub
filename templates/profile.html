@@ -30,9 +30,9 @@
                         {% else %}
                         Account Status: ACTIVE
                         <br>
-                        Subscribed Date: {{account.sub_date}}
+                        Subscribed Date: {{account.sub_date.date()}} at {{account.sub_date.time().strftime('%H:%M')}}
                         <br>
-                        Due Date: {{account.due_date}}
+                        Due Date: {{account.due_date.date()}} at 00:00
                         {% endif %}
                         .</p>
                 </div>
