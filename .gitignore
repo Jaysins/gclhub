@@ -7,4 +7,4 @@ migrate.py
 gcl
 template
 service.db
-
+config.py

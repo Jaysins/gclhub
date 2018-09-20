@@ -46,4 +46,5 @@ from views import *
 
 
 if __name__ == '__main__':    
-    app.run(host='192.168.1.26')
+    # app.run(host='192.168.1.26')
+    app.run()

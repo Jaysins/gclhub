@@ -203,6 +203,8 @@ def login():
                 if user.verified is True:
                     if check_password_hash(user.password, password):
                         login_user(user)
+                        if user.verified == True:
+                            return redirect(url_for('admin'))
                         return redirect(url_for('dashboard'))
                     else:
                         return 'Invalid password'
