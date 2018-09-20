@@ -23,9 +23,8 @@
                     <h3 class="form-title mb-3">Login<br> <span>Access your account.</span> </h3>
                     <div class="input-group flex column-all justify-center">
                         {{ form.csrf_token }}
-                        <input type="text" name="name" placeholder="Username" value="{{ name }}" id="username" disabled>
-                        <!--<input name="email" type="text" placeholder="Email Address" autofocus>-->
-                        <input name="password" type="password" placeholder="Admin Password" id="password">
+                        {{form.name(placeholder='Email Address or Name', required=true, value=name, disabled=true)}}
+                        {{form.password(placeholder='Password', required=true)}}
                         <button class="btn primary md">Login</button>
                     </div>
                 </div>
@@ -37,8 +36,8 @@
 
 {% block script %}
 <script>
-    $('#form').submit(function(){
-        document.getElementById('username').disabled=false;        
+    $('#form').submit(function () {
+        document.getElementById('name').disabled = false;
     })
 </script>
 {% endblock %}

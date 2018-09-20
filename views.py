@@ -15,7 +15,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import logout_user, login_required, login_user, current_user
 from itsdangerous import SignatureExpired
 # noinspection PyUnresolvedReferences
-from forms import RegisterForm, LoginForm, AdminLoginForm
+from forms import RegisterForm, LoginForm, AdminLoginForm, AddNewForm
 from flask_mail import Message
 from calendar import monthrange
 
@@ -119,26 +119,11 @@ def confirm(email, user_id, username, ref):
         header = 'Account Approved'
     else:
         body = f'Dear {username}, please Click to verify your email address {link}.'
-    msg = Message(f'{header}', sender='jaysinscars@gmail.com', recipients=[email])
-
-    msg.body = body
-    mail.send(msg)
+    # msg = Message(f'{header}', sender='jaysinscars@gmail.com', recipients=[email])
+    # msg.body = body
+    # mail.send(msg)
     print(body)
     print(link)
-
-
-def add_one_month(t):
-    one_day = datetime.timedelta(days=1)
-    one_month_later = t + one_day
-    while one_month_later.month == t.month:  # advance to start of next month
-        one_month_later += one_day
-    target_month = one_month_later.month
-    while one_month_later.day < t.day:  # advance to appropriate day
-        one_month_later += one_day
-        if one_month_later.month != target_month:  # gone too far
-            one_month_later -= one_day
-            break
-    return one_month_later
 
 
 @app.route('/')
@@ -277,7 +262,7 @@ def dashboard():
     user_data = {'username': user.name, 'email': user.email}
     check_account = Account.query.filter_by(user_id=user.id).first()
     print(user.id)
-    history = History.query.filter_by(user_id=user.id).all()    
+    history = History.query.filter_by(user_id=user.id).order(History.id.desc()).all()    
     print(history)
     return render_template('dashboard.html', user=json.dumps(user_data),
                            subscribed=check_account.plan if check_account is not None else 'None', history=history)
@@ -322,10 +307,40 @@ def admin_login():
 @admin_login_required
 def admin():
     approved_users = []
-    approved = Account.query.filter_by(verified=True).all()
+    approved = Account.query.filter_by(verified=True).order_by(Account.id.desc()).all()
     for account in approved:
         approved_users.append(User.query.filter_by(id=account.user_id).first())
     return render_template('admin.html', approved_users=approved_users, approved=approved)
+
+
+@app.route('/admin/add_new', methods=['GET', 'POST'])
+@login_required
+@admin_login_required
+def add_new():
+    form = AddNewForm(request.form)
+    if request.method == 'POST' and form.validate():
+        print(request.form['time'])
+        date =  datetime.datetime.strptime(str(form.date.data), "%Y-%m-%d")
+        time = request.form['time']
+        if len(time) == 4:
+            hour = int(time[0])
+            minute = int(time[2] + time[3])
+        elif len(time) == 5:
+            hour = int(time[0] + time[1])
+            minute = int(time[3] + time[4])
+        else:
+            return
+        date = date.replace(minute=minute, hour=hour, second=00)        
+        due_date = date + datetime.timedelta(hours=int(form.hours.data))
+        manual_user = User(name=form.name.data.title(), email=form.email.data.capitalize())        
+        db.session.add(manual_user)
+        db.session.commit()        
+        manual_account = Account(plan=form.space.data.title(), user_id=manual_user.id, sub_date=date, due_date=due_date, verified=True, manual=True)
+        db.session.add(manual_account)
+        db.session.commit()        
+    else:
+        print(form.errors)
+    return render_template('add_new.html', form=form)
 
 
 @app.route('/admin/new_requests')
@@ -333,7 +348,7 @@ def admin():
 @admin_login_required
 def new_requests():
     pending_users = []
-    pending = Account.query.filter_by(verified=False).all()
+    pending = Account.query.filter_by(verified=False).order_by(Account.id.desc()).all()
     for account in pending:
         pending_users.append(User.query.filter_by(id=account.user_id).first())
     return render_template('new_requests.html', pending_users=pending_users, pending=pending)

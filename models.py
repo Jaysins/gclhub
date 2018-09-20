@@ -18,7 +18,8 @@ class User(UserMixin, db.Model):
     email = db.Column(db.String(115), unique=True)
     password = db.Column(db.String(120))
     is_admin = db.Column(db.Boolean, default=False) 
-    verified = db.Column(db.Boolean, default=False) 
+    verified = db.Column(db.Boolean, default=False)     
+    manual = db.Column(db.Boolean, default=False)
 
 
 class Account(db.Model):
@@ -32,6 +33,7 @@ class Account(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'))
     verified = db.Column(db.Boolean, default=False)
     reference = db.Column(db.String(100), default='')
+    manual = db.Column(db.Boolean, default=False)
 
 
 class History(db.Model):

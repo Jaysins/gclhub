@@ -10,8 +10,12 @@
                 <span class="text">Admin</span></a>
         </li>
         <li class="{{ 'menu-item active' if 'new_requests' in request.url_rule|string else 'menu-item' }}">
-            <a href="{{ url_for('new_requests') }}"><span class="icon"><i class="fas fa-edit"></i></span>
+            <a href="{{ url_for('new_requests') }}"><span class="icon"><i class="fas fa-archive"></i></span>
                 <span class="text">New Requests</span></a>
+        </li>
+        <li class="{{ 'menu-item active' if 'add_new' in request.url_rule|string else 'menu-item' }}">
+            <a href="{{ url_for('add_new') }}"><span class="icon"><i class="fas fa-edit"></i></span>
+                <span class="text">Add New</span></a>
         </li>
         <!-- <li class="{{ 'menu-item active' if 'profile' in request.url_rule|string else 'menu-item' }}">
             <a href="{{ url_for('profile') }}"><span class="icon"><i class="fas fa-user"></i></span>

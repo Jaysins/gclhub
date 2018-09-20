@@ -1,3 +1,9 @@
+To run
+
+
+make sure you have python installed
+and you've added it and 'pip' to path
+
 go to your work folder
 
 open command prompt
@@ -6,21 +12,12 @@ type in:
 
 git clone https://github.com/Jaysins/gclhub.git
 
-git init 
-
-git add .
-
-git commit -m 'commited'
-
-git branch workhub
-
 git remote add origin https://github.com/Jaysins/gclhub.git
 
+pip install -r requirements.txt
 
-then you can work on your files
+python app.py
 
+when signing up 
 
-when you done
-
-git push origin workhub
-
+check the command prompt for your verification link
