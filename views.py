@@ -146,7 +146,8 @@ def signup():
     try:
         print(current_user.name)
         return redirect(url_for('dashboard'))
-    except AttributeError:    
+    except AttributeError:            
+        error = ''
         form = RegisterForm(request.form)
         if request.method == 'POST' and form.validate():
             username = form.name.data.title()
@@ -154,17 +155,25 @@ def signup():
             check_valid = User.query.filter_by(name=username).first()
             if check_valid is None:
                 check_valid = User.query.filter_by(email=email).first()
-            if check_valid is not None:
-                return 'Username already taken'
-            password = generate_password_hash(form.password.data, method='sha256')        
+            if check_valid is not None:                
+                return render_template('signup.html', error='Username or Email already taken', user='user', form=form)
+            password = generate_password_hash(form.password.data, method='sha256')      
+
             new_user = User(name=username, email=email, password=password, is_admin=False, verified=False)
             db.session.add(new_user)
             db.session.commit()
             confirm(email, new_user.id, new_user.name, ref='signup')
+            
             return redirect(url_for('confirm_message', user_id=new_user.id))
         else:
+            get_error = ''
             print(form.errors)
-        return render_template('signup.html', form=form)
+            if form.errors:
+                for errors in form.errors:
+                    get_error = errors
+                    break
+                error = 'please enter a valid {}'.format(get_error) if 'Match' not in form.errors[get_error][0] else form.errors[get_error][0]
+        return render_template('signup.html', form=form, error=error)
 
 
 @app.route('/login', methods=['GET', 'POST'])
@@ -175,7 +184,8 @@ def login():
     try:
         print(current_user.name)
         return redirect(url_for('dashboard'))
-    except AttributeError:    
+    except AttributeError:
+        message = ''        
         form = LoginForm(request.form)
         if request.method == 'POST' and form.validate():
             username = form.name.data.title()
@@ -188,18 +198,24 @@ def login():
                 if user.verified is True:
                     if check_password_hash(user.password, password):
                         login_user(user)
-                        if user.verified == True:
+                        if user.is_admin is True:
                             return redirect(url_for('admin'))
                         return redirect(url_for('dashboard'))
                     else:
-                        return 'Invalid password'
+                        return render_template('login.html', form=form, error='Invalid Password')
                 else:
                     return redirect(url_for('confirm_message', user_id=user.id))
             else:
-                return 'user not found'
-        else:
+                return render_template('login.html', form=form, error='Invalid Email or Username')
+        else:            
             print(form.errors)
-        return render_template('login.html', form=form)
+            get_error = ''
+            if form.errors:
+                for errors in form.errors:
+                    get_error = errors
+                    break
+                message = 'please enter a valid {}'.format(get_error)
+        return render_template('login.html', form=form, error=message)
 
 
 @app.route('/confirm_message/<int:user_id>')

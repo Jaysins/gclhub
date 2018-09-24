@@ -43,37 +43,4 @@
 {% block script %}
 <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
 <script src="{{ url_for('static', filename='assets/js/timepicker.min.js') }}"></script>
-<script>
-
-    $('#form').submit(function(e){        
-        var time = document.getElementById('time').value
-        if (time.length > 5){
-            alert('time not that long')
-            alert('ohh and please right click and click on inspect element.')
-            console.log('fuck you!!!!!!')
-
-            return false
-        }
-
-        for (var i=0; i<time.length; i++){
-            if ((isNaN(time[i]) === true ) && (time[i] !== ':')){
-                alert('Enter valid time!!')
-                alert('ohh and please right click and click on inspect element.')
-                console.log('fuck you!!!!!!')
-                return false
-            }
-        }
-        return true
-    })
-    var timepicker = new TimePicker('time', {
-      lang: 'en',
-      theme: 'dark'
-    });
-    timepicker.on('change', function(evt) { 
-      var value = (evt.hour || '00') + ':' + (evt.minute || '00');
-      evt.element.value = value;
-    })
-
-</script>
-
 {% endblock %}
