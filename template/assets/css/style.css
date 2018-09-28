@@ -1,11 +1,17 @@
-@import url("https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c|Mukta");
+@import url("https://fonts.googleapis.com/css?family=Molengo");
 html {
-  font-size: 15px;
+  font-size: 14px;
   word-spacing: 1px;
   -ms-text-size-adjust: 100%;
   -webkit-text-size-adjust: 100%;
   -moz-osx-font-smoothing: grayscale;
   -webkit-font-smoothing: antialiased;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  font-family: 'Molengo', Quicksand, 'Nunito', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
 }
 
 *,
@@ -15,22 +21,7 @@ html {
           box-sizing: border-box;
   margin: 0;
   padding: 0;
-  font-family: 'Mukta', 'M PLUS Rounded 1c', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
   line-height: 1.3em;
-}
-
-body {
-  background-color: #0e2144;
-}
-
-body .fixed-navbar .navbar {
-  position: fixed;
-  top: 0;
-  left: 0;
-}
-
-body .fixed-navbar main {
-  padding-top: 100px;
 }
 
 img {
@@ -216,8 +207,12 @@ a {
   margin-bottom: 10px;
 }
 
+.mb-3 {
+  margin-bottom: 15px;
+}
+
 .bg-dark {
-  background-color: #0e2144;
+  background-color: #111226;
 }
 
 .bg-dark li,
@@ -241,6 +236,7 @@ a {
   cursor: pointer;
   -webkit-transition: all 0.2s;
   transition: all 0.2s;
+  font: inherit;
 }
 
 .btn.primary {
@@ -289,18 +285,95 @@ a {
   border-radius: 30px;
 }
 
+body {
+  height: 100vh;
+  background-image: url(../images/bg.jpg);
+  background-color: #111226;
+  position: relative;
+}
+
+body::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(17, 18, 38, 0.9);
+  z-index: -1;
+  background: -webkit-gradient(linear, left top, right top, from(#111226), to(rgba(17, 18, 38, 0.7)));
+  background: linear-gradient(to right, #111226, rgba(17, 18, 38, 0.7));
+}
+
+body .fixed-navbar .navbar {
+  position: fixed;
+  top: 0;
+  left: 0;
+}
+
+body .fixed-navbar main {
+  padding-top: 120px;
+}
+
+.header {
+  height: calc(100vh - $nav-height);
+  height: 80vh;
+}
+
+.header > * {
+  color: #ccc;
+}
+
+.header .heading {
+  font-size: 2.5em;
+  margin-bottom: 20px;
+}
+
+.header .subheading {
+  max-width: 300px;
+  margin-bottom: 20px;
+}
+
+.header .call-to-action {
+  border: 1px solid white;
+  padding: 1em 1.5em;
+  border-radius: 50px;
+  background-color: transparent;
+  color: #aaa;
+  cursor: pointer;
+  -webkit-transition: all 0.2s ease-in-out;
+  transition: all 0.2s ease-in-out;
+  font: inherit;
+}
+
+.header .call-to-action:hover {
+  background-color: #fff;
+  color: #333;
+}
+
 .navbar {
   width: 100%;
-  height: 100px;
+  height: 120px;
+  background-color: transparent;
+}
+
+.navbar .logo {
+  color: #aaa;
+  letter-spacing: 1px;
 }
 
 .navbar .logo img {
   width: 50px;
 }
 
+.navbar .logo span {
+  color: darkgoldenrod;
+  font-weight: bolder;
+}
+
 .navbar .menu a {
   padding: 0 1em;
-  letter-spacing: 0.2px;
+  letter-spacing: 0.3px;
 }
 
 .form-card {
@@ -315,6 +388,31 @@ a {
   border-radius: 3px;
 }
 
+.form-card .left,
+.form-card .right {
+  padding: 2em;
+}
+
+.form-card .form-title {
+  -ms-flex-item-align: stretch;
+      -ms-grid-row-align: stretch;
+      align-self: stretch;
+  color: #185a91;
+  padding-bottom: 5px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+  text-transform: uppercase;
+  letter-spacing: 0;
+  font-weight: bolder;
+  font-size: 1em;
+}
+
+.form-card .form-title span {
+  text-transform: none;
+  color: #ccc;
+  font-weight: 400;
+  font-size: 0.85em;
+}
+
 .sign-up-with {
   padding: 5em 0;
   border-right: 1px solid rgba(0, 0, 0, 0.05);
@@ -327,7 +425,6 @@ a {
 
 .input-group {
   width: 100%;
-  max-width: 300px;
   margin: 0 10px;
 }
 

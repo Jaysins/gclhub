@@ -15,9 +15,16 @@
     <div class="container">
         <br><br>
         <h3 class="section-title">Approved Requests</h3>
+        <form action="">
+            <input type="text">
+            <button class="subscribe subscribed">search for user <i class="fas fa-chevron-right"></i></button>
+            <button class=""></button>
+        </form>        
+        <br>
         <div class="offers">
             {% for user in approved_users %}
-            <section class="offer">
+            <section class="offer">               
+                <span class="icon"><a href="{{ url_for('admin_edit', user_id=user.id) }}"><i class="fas fa-edit"></i></a></span>
                 <header>
                     <h3 class="title">Name: {{user.name}} </h3>
                     <span class="subtitle">Email address: {{user.email}} </span>

@@ -278,7 +278,7 @@ def dashboard():
     user_data = {'username': user.name, 'email': user.email}
     check_account = Account.query.filter_by(user_id=user.id).first()
     print(user.id)
-    history = History.query.filter_by(user_id=user.id).order(History.id.desc()).all()    
+    history = History.query.filter_by(user_id=user.id).order_by(History.id.desc()).all()    
     print(history)
     return render_template('dashboard.html', user=json.dumps(user_data),
                            subscribed=check_account.plan if check_account is not None else 'None', history=history)
@@ -326,6 +326,7 @@ def admin():
     approved = Account.query.filter_by(verified=True).order_by(Account.id.desc()).all()
     for account in approved:
         approved_users.append(User.query.filter_by(id=account.user_id).first())
+    print(approved_users[0].id)
     return render_template('admin.html', approved_users=approved_users, approved=approved)
 
 
@@ -353,7 +354,8 @@ def add_new():
         db.session.commit()        
         manual_account = Account(plan=form.space.data.title(), user_id=manual_user.id, sub_date=date, due_date=due_date, verified=True, manual=True)
         db.session.add(manual_account)
-        db.session.commit()        
+        db.session.commit()
+        return redirect(url_for('admin'))
     else:
         print(form.errors)
     return render_template('add_new.html', form=form)
@@ -368,6 +370,35 @@ def new_requests():
     for account in pending:
         pending_users.append(User.query.filter_by(id=account.user_id).first())
     return render_template('new_requests.html', pending_users=pending_users, pending=pending)
+
+
+@app.route('/admin/edit/<int:user_id>', methods=['GET', 'POST'])
+@login_required
+@admin_login_required
+def admin_edit(user_id):
+    form = AddNewForm(request.form)
+    user = User.query.filter_by(id=user_id).first()
+    account = Account.query.filter_by(user_id=user_id).first()
+    if user is None:   
+        return 'User not found'
+    if request.method == 'POST' and form.validate():
+        print(request.form['time'])
+        date =  datetime.datetime.strptime(str(form.date.data), "%Y-%m-%d")
+        time = request.form['time']
+        if len(time) == 4:
+            hour = int(time[0])
+            minute = int(time[2] + time[3])
+        elif len(time) == 5:
+            hour = int(time[0] + time[1])
+            minute = int(time[3] + time[4])
+        else:
+            return 'time error'
+        date = date.replace(minute=minute, hour=hour, second=00)        
+        due_date = date + datetime.timedelta(hours=int(form.hours.data))
+        manual_account = Account(plan=form.space.data.title(), user_id=user.id, sub_date=date, due_date=due_date, verified=True, manual=True)
+        db.session.add(manual_account)
+        db.session.commit()        
+    return render_template('new_edit.html', account=account, user=user, form=form)
 
 
 @app.route('/receive_ref')

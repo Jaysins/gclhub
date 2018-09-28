@@ -1,27 +1,23 @@
-@import url('https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c|Mukta');
 @import './variables';
-
-html {
-	font-size: 15px;
-	word-spacing: 1px;
-	-ms-text-size-adjust: 100%;
-	-webkit-text-size-adjust: 100%;
-	-moz-osx-font-smoothing: grayscale;
-	-webkit-font-smoothing: antialiased;
-}
-
-*,
-*:before,
-*:after {
-	box-sizing: border-box;
-	margin: 0;
-	padding: 0;
-	font-family: 'Mukta', 'M PLUS Rounded 1c', 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-	line-height: 1.3em;
-}
+@import './utils';
 
 body {
-	background-color: darken(bgcolor(dark), 10);
+	height: 100vh;
+	background-image: url(../images/bg.jpg);
+	background-color: bgcolor(dark);
+	position: relative;
+
+	&::before {
+		content: '';
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		background-color: transparentize(bgcolor(dark), 0.1);
+		z-index: -1;
+		background: linear-gradient(to right, bgcolor(dark), transparentize(bgcolor(dark), 0.3));
+	}
 	.fixed-navbar {
 		.navbar {
 			position: fixed;
@@ -33,238 +29,57 @@ body {
 		}
 	}
 }
-img {
-	width: 100%;
-	display: block;
-}
-a {
-	text-decoration: none;
-	color: rgb(24, 90, 145);
-}
-.container {
-	max-width: 1100px;
-	margin: 0 auto;
-	padding: 0 25px;
-	@media (max-width: $tablet) {
-		padding: 0 20px;
-	}
-}
 
-// Flex -->
-.flex {
-	display: flex;
-	&.row {
-		&-all {
-			flex-direction: row;
-		}
-		&-lg {
-			@include desktop {
-				flex-direction: row;
-			}
-		}
-		&-md {
-			@include tablet {
-				flex-direction: row;
-			}
-		}
-		&-sm {
-			@include mobile {
-				flex-direction: row;
-			}
-		}
+.header {
+	height: calc(100vh - $nav-height);
+	height: 80vh;
+	> * {
+		color: #ccc;
 	}
-	&.column {
-		&-all {
-			flex-direction: column;
-		}
-		&-lg {
-			@include desktop {
-				flex-direction: column;
-			}
-		}
-		&-md {
-			@include tablet {
-				flex-direction: column;
-			}
-		}
-		&-sm {
-			@include mobile {
-				flex-direction: column;
-			}
-		}
+	.heading {
+		font-size: 2.5em;
+		margin-bottom: 20px;
 	}
-	&.wrap {
-		flex-wrap: wrap;
+	.subheading {
+		max-width: 300px;
+		margin-bottom: 20px;
 	}
-	&.space-between {
-		justify-content: space-between;
+	.call-to-action {
+		border: 1px solid rgba(255, 255, 255, 1);
+		padding: 1em 1.5em;
+		border-radius: 50px;
+		background-color: transparent;
+		color: #aaa;
+		cursor: pointer;
+		transition: all 0.2s ease-in-out;
+		font: inherit;
 	}
-	&.space-around {
-		justify-content: space-around;
+	.call-to-action:hover {
+		background-color: #fff;
+		color: #333;
 	}
 }
-
-.expand {
-	flex: 1;
-}
-
-.justify-start {
-	justify-content: flex-start;
-}
-
-.justify-center {
-	justify-content: center;
-}
-
-.justify-end {
-	justify-content: flex-end;
-}
-
-.align-start {
-	align-items: flex-start;
-}
-
-.align-center {
-	align-items: center;
-}
-
-.align-end {
-	align-items: flex-end;
-}
-
-// <-- Flex
-
-/* ------------------------------------------------- */
-
-// Extra -->
-.fill-h {
-	width: 100%;
-}
-
-.fill-v {
-	height: 100%;
-}
-
-.mr {
-	&-1 {
-		margin-right: 5px;
-	}
-}
-
-.ml {
-	&-1 {
-		margin-left: 5px;
-	}
-	&-2 {
-		margin-left: 10px;
-	}
-}
-
-.mb {
-	&-1 {
-		margin-bottom: 5px;
-	}
-	&-2 {
-		margin-bottom: 10px;
-	}
-}
-
-// <-- Extra
-
-// Background --->
-.bg {
-	&-dark {
-		background-color: darken(bgcolor(dark), 10);
-		li,
-		p,
-		a {
-			color: darken(textcolor(light), 5);
-		}
-	}
-	&-light {
-		background-color: bgcolor(light);
-		* {
-			color: lighten(textcolor(dark), 20);
-		}
-	}
-	&-red {
-		background-color: bgcolor(red);
-	}
-}
-// <-- Background
-
-// Button -->
-
-.btn {
-	$padding-sm: 2px 10px;
-	$padding-md: 11px 15px;
-	$padding-lg: 14px 20px;
-	background-color: #fff;
-	border-radius: 2px;
-	border: 1px solid rgba(0, 0, 0, 0.03);
-	cursor: pointer;
-	transition: all 0.2s;
-	&.primary {
-		background-color: bgcolor(primary);
-		color: textcolor(light);
-		&:hover {
-			background-color: darken(bgcolor(primary), 10);
-		}
-	}
-	&.secondary {
-		background-color: bgcolor(secondary);
-		color: textcolor(dark);
-		&:hover {
-			background-color: darken(bgcolor(secondary), 10);
-		}
-	}
-	&.red {
-		background-color: bgcolor(red);
-		color: lighten(textcolor(light), 10);
-		&:hover {
-			background-color: darken(bgcolor(red), 10);
-		}
-	}
-	&.sm {
-		padding: $padding-sm;
-		font-size: 0.87em;
-	}
-	&.md {
-		padding: $padding-md;
-		font-size: 1em;
-	}
-	&.lg {
-		padding: $padding-lg;
-		font-size: 1.1em;
-	}
-	&.rounded {
-		border-radius: 30px;
-	}
-}
-// <-- Button
 
 .navbar {
 	width: 100%;
 	height: $nav-height;
-	// border-bottom: 1px solid rgba(0, 0, 0, 0.03);
-	// box-shadow: 0 0 20px rgba(0, 0, 0, 0.06);
-	// background: linear-gradient(
-	// 	to rrigh,
-	// 	bgcolor(dark),
-	// 	darken(bgcolor(dark), 10),
-	// 	lighten(bgcolor(dark), 10)
-	// );
+	background-color: transparent;
 
 	.logo {
+		color: #aaa;
+		letter-spacing: 1px;
 		img {
 			width: 50px;
+		}
+		span {
+			color: darkgoldenrod;
+			font-weight: bolder;
 		}
 	}
 	.menu {
 		a {
 			padding: 0 1em;
-			// color: rgb(131, 156, 160);
-			letter-spacing: 0.2px;
+			letter-spacing: 0.3px;
 		}
 	}
 }
@@ -278,6 +93,28 @@ a {
 	box-shadow: 0 0 20px rgba(0, 0, 0, 0.05);
 	background-color: #fff;
 	border-radius: 3px;
+
+	.left,
+	.right {
+		padding: 2em;
+	}
+
+	.form-title {
+		align-self: stretch;
+		color: #185a91;
+		padding-bottom: 5px;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+		text-transform: uppercase;
+		letter-spacing: 0;
+		font-weight: bolder;
+		font-size: 1em;
+		span {
+			text-transform: none;
+			color: #ccc;
+			font-weight: 400;
+			font-size: 0.85em;
+		}
+	}
 }
 
 .sign-up-with {
@@ -291,7 +128,6 @@ a {
 
 .input-group {
 	width: 100%;
-	max-width: 300px;
 	margin: 0 10px;
 	input {
 		border: 1px solid rgba(0, 0, 0, 0.08);
