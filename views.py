@@ -26,6 +26,10 @@ from calendar import monthrange
 
 
 def change_date():
+    """
+
+    :return:
+    """
     date = datetime.datetime.now()
 
     c = monthrange(date.year, date.month)
@@ -44,6 +48,11 @@ def change_date():
 
 
 def add_one_month(t):
+    """
+
+    :param t:
+    :return:
+    """
     one_day = datetime.timedelta(days=1)
     one_month_later = t + one_day
     print(one_month_later.month)
@@ -163,8 +172,8 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             confirm(email, new_user.id, new_user.name, ref='signup')
-            
-            return redirect(url_for('confirm_message', user_id=new_user.id))
+
+            # return redirect(url_for('confirm_message', user_id=new_user.id))
         else:
             get_error = ''
             print(form.errors)
@@ -330,6 +339,34 @@ def admin():
     return render_template('admin.html', approved_users=approved_users, approved=approved)
 
 
+@app.route('/search', methods=['POST'])
+@login_required
+@admin_login_required
+def search():
+    if 'query' not in request.form:
+        return 'error'
+    query = request.form['query'].capitalize()  
+    account_info = Account.query.all()    
+    # all_dates = [[date.sub_date.date(), dates.sub_date.date()] for date in account_info for dates in account_info]
+    # print(query in all_dates)
+    # print(all_dates)
+    status = []
+    user_query = User.query.filter(User.name.like(f'%{query}%') | User.email.like(f'%{query}%')).all()
+    for user in user_query:
+        status.append(Account.query.filter_by(user_id=user.id).all())
+    print(status)
+    # account_query = Account.query.filter(Account.plan.like(f'%{query}%')).all()
+
+
+        # get_data = [[data.state, data.id, data.room_type, data.rooms, data.price, data.approved]
+        #         for data in Room.query.filter(Room.state.like('%' + request.args['valu'] + '%') | Room.room_type.like(
+        #     '%' + request.args['valu'] + '%') | Room.town.like('%' + request.args['valu'] + '%') | Room.rooms.like(
+        #     '%' + request.args['valu'] + '%'), (Room.approved == True)).order_by(Room.id.desc()).all()]
+    
+    # return render_template('admin.html', approved_users=approved_users, approved=approved)
+    return render_template('search.html', user_query=user_query, status=status)
+
+
 @app.route('/admin/add_new', methods=['GET', 'POST'])
 @login_required
 @admin_login_required
@@ -407,11 +444,8 @@ def receive_ref():
     user = User.query.filter_by(name=current_user.name).first()
     sub = Account(plan=data['plan'].replace('\n', ''),
                   user_id=user.id, reference=data['reference'])
-            
-
     db.session.add(sub)
     db.session.commit()
-
     confirm(user.email, user.id, user.name, ref='receive')
     return jsonify({'response': 'success'})
 

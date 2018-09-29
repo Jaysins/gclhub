@@ -20,6 +20,8 @@ class User(UserMixin, db.Model):
     is_admin = db.Column(db.Boolean, default=False) 
     verified = db.Column(db.Boolean, default=False)     
     manual = db.Column(db.Boolean, default=False)
+    # account = db.Column(db.relationship('Account', backref='user', lazy='dynamic'))
+    # history = db.Column(db.relationship('History', backref='user', lazy='dynamic'))
 
 
 class Account(db.Model):

@@ -1,39 +1,34 @@
-{% extends 'base.html' %}
-
-{% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
-{% endblock %}
-
-{% block body %}
-
-{% include 'auth.html' %}
-
-{% endblock %}
-
-{% block main %}
+{% extends 'base.html' %} {% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}"> {% endblock %} {% block body
+%} {% include 'auth.html' %} {% endblock %} {% block main %}
 <main>
     <div class="container">
         <br><br>
         <h3 class="section-title">Approved Requests</h3>
-        <form action="">
-            <input type="text">
-            <button class="subscribe subscribed">search for user <i class="fas fa-chevron-right"></i></button>
-            <button class=""></button>
-        </form>        
+        <div class="offers">
+            <section class="offer">
+                <form action="{{url_for('search')}}" method="POST">
+                    <input type="text" name="query">
+                    <br>
+                    <br>
+                    <button class="subscribe">search for user <i class="fas fa-chevron-right" disabled='false'></i></button>                    
+                </form>
+            </section>
+        </div>
         <br>
         <div class="offers">
             {% for user in approved_users %}
-            <section class="offer">               
+            <section class="offer">
                 <span class="icon"><a href="{{ url_for('admin_edit', user_id=user.id) }}"><i class="fas fa-edit"></i></a></span>
                 <header>
                     <h3 class="title">Name: {{user.name}} </h3>
                     <span class="subtitle">Email address: {{user.email}} </span>
                     <br>
-                    <span class="subtitle">Sub Date: {{approved[loop.index-1].sub_date.date()}} at
-                        {{approved[loop.index-1].sub_date.time().strftime('%H:%M')}}</span>
+                    <span class="subtitle">Sub Date: {{approved[loop.index-1].sub_date.date()}} at {{approved[loop.index-1].sub_date.time().strftime('%H:%M')}}
+                    </span>
                     <br>
-                    <span class="subtitle">Due Date: {{approved[loop.index-1].due_date.date()}} at
-{{approved[loop.index-1].due_date.time().strftime('%H:%M')}}</span>
+                    <span class="subtitle">Due Date: {{approved[loop.index-1].due_date.date()}} at {{approved[loop.index-1].due_date.time().strftime('%H:%M')}}
+                    </span>
                     <br>
                 </header>
                 <div class="price">
@@ -45,7 +40,5 @@
         </div>
 
 </main>
-{% endblock %}
-{% block script %}
-<script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
-{% endblock %}
+{% endblock %} {% block script %}
+<script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script> {% endblock %}
