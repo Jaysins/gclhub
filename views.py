@@ -174,8 +174,7 @@ def signup():
             db.session.add(new_user)
             db.session.commit()
             confirm(email, new_user.id, new_user.name, ref='signup')
-
-            # return redirect(url_for('confirm_message', user_id=new_user.id))
+            return redirect(url_for('confirm_message', user_id=new_user.id))
         else:
             get_error = ''
             print(form.errors)
@@ -293,7 +292,7 @@ def dashboard():
     print(history)
     return render_template('dashboard.html', user=json.dumps(user_data),
                            subscribed=check_account.plan if check_account is not None else 'None', history=history,
-                           verified=check_account.verified)
+                           verified=check_account.verified if check_account is not None else 'None')
 
 
 @app.route('/profile')
