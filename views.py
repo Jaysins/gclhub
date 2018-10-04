@@ -337,7 +337,6 @@ def admin():
     approved = Account.query.filter_by(verified=True).order_by(Account.id.desc()).all()
     for account in approved:
         approved_users.append(User.query.filter_by(id=account.user_id).first())
-    print(approved_users[0].id)
     return render_template('admin.html', approved_users=approved_users, approved=approved)
 
 
