@@ -479,7 +479,7 @@ def request_change():
         if 'email' not in request.form:
             return render_template('get_mail.html', error='refresh browser')
         email = request.form['email']
-        check_mail = User.query.filter_by(email=email).first()
+        check_mail = User.query.filter_by(email=email.capitalize()).first()
         if check_mail:
             confirm(email=email, user_id=check_mail.id, username=check_mail.name, ref='password')
             return render_template('confirm.html', user_email=check_mail.email, userId=check_mail.id)
