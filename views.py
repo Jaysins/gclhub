@@ -483,6 +483,8 @@ def request_change():
         if check_mail:
             confirm(email=email, user_id=check_mail.id, username=check_mail.name, ref='password')
             return render_template('confirm.html', user_email=check_mail.email, userId=check_mail.id)
+        else:
+            return 'invalid email'
     return render_template('get_mail.html', error='')    
 
 
