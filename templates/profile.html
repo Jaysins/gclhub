@@ -1,0 +1,31 @@
+{% extends 'base.html' %} {% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='assets/css/dashboard.css')}}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/new.css') }}">
+{% endblock %} {% block body %} {% include 'user.html' %} {% endblock %} {% block main %}
+<main>
+    <div class="container">
+        <div class="profile">
+            <div class="left">
+                <div class="header">
+                    <div class="image">
+                        <img src="{{url_for('static', filename='assets/images/bg.jpg')}}" alt="">
+                    </div>
+                </div>
+            </div>
+            <div class="right">
+                <div class="info">
+                    <h4 class="name">{{user}}</h4>
+                    <p class="text"> <span class="name">Current Plan</span>: {{account.plan if account != None else account}}
+                        <br> {% if account == None %} Please subscribe to a<a href="{{url_for('dashboard')}}"> plan</a>
+                        {% elif account.verified == False %} <span class="name">Account Status</span>: Processing {% else
+                        %}<span class="name">Account Status</span>: ACTIVE
+                        <br> <span class="name"> Subscribed Date</span>: {{account.sub_date.date()}} at {{account.sub_date.time().strftime('%H:%M')}}
+                        <br> <span class="name">Due Date</span>: {{account.due_date.date()}} at 00:00 {% endif %} .
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</main>
+{% endblock %} {% block script %}
+<script src="{{url_for('static', filename='assets/js/dashboard.js')}}"></script> {% endblock %}

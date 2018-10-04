@@ -1,0 +1,29 @@
+<aside class="sidebar">
+    <div class="menu-toggler">
+        <button class="toggler icon">
+            <i class="fas fa-bars"></i>
+        </button>
+    </div>
+    <ul class="menu">
+        <li class="{{ 'menu-item active' if 'dashboard' in request.url_rule|string else 'menu-item' }}">
+            <a href="{{ url_for('dashboard') }}"><span class="icon"><i class="fas fa-home"></i></span>
+                <span class="text">Home</span></a>
+        </li>
+        <li class="{{ 'menu-item active' if 'account' in request.url_rule|string else 'menu-item' }}">
+            <a href="#"><span class="icon"><i class="fas fa-edit"></i></span>
+                <span class="text">Account</span></a>
+        </li>
+        <li class="{{ 'menu-item active' if 'profile' in request.url_rule|string else 'menu-item' }}">
+            <a href="{{ url_for('profile') }}"><span class="icon"><i class="fas fa-user"></i></span>
+                <span class="text">Profile</span></a>
+        </li>
+        <li class="{{ 'menu-item active' if 'admin' in request.url_rule|string else 'menu-item' }}">
+            <a href="{{ url_for('admin') }}"><span class="icon"><i class="fas fa-user-secret"></i></span>
+                <span class="text">Admin</span></a>
+        </li>
+        <li class="menu-item">
+            <a href="{{ url_for('logout') }}"><span class="icon"><i class="fas fa-blind"></i></span>
+                <span class="text">logout</span></a>
+        </li>
+    </ul>
+</aside>

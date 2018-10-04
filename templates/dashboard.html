@@ -1,0 +1,225 @@
+{% extends 'base.html' %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+{% endblock %}
+
+{% block body %}
+
+    {% include 'user.html' %}
+
+{% endblock %}
+
+{% block main %}
+    <main>
+        <div class="container">
+            <h3 class="section-title">Subscription History</h3>
+            <div class="intro offers">
+                {% if history|length < 1 %}
+                    <section class="offer">
+                        <header>
+                            <h3 class="title">No History </h3>
+                            <span class="subtitle"> </span>
+                        </header>
+                    </section>
+                {% else %}
+
+                {% for data in history %}
+                <section class="offer">
+                    <header>
+                        <h3 class="title">Plan: {{data.plan}} </h3>
+                        <span class="subtitle">Sub Date: {{data.sub_date}} </span>
+                        <br>
+                        <span class="subtitle">Due Date:{{data.due_date}} </span>
+                    </header>
+
+{#                    <div class="price">
+                        <div class="amount">Amount Paid: {{data.paid}} </div>
+                    </div>#}
+
+                </section>
+                {% endfor %}
+            {% endif %}
+{##}
+{#            <!-- <section class="offer">#}
+{#                <header>#}
+{#                    <h3 class="title">Studio</h3>#}
+{#                    <span class="subtitle">Life Insurance Policy</span>#}
+{#                </header>#}
+{#                <div class="price">#}
+{#                    <div class="amount">N120</div>#}
+{#                </div>#}
+{#                <button disabled class="subscribe subscribed">Subscribed <i class="fas fa-check"></i></button>#}
+{#                <button disabled class="subscribe unsubscribe">Unsubscribe <i class="fas fa-times"></i></button>#}
+{#            </section>#}
+{#            <section class="offer">#}
+{#                <header>#}
+{#                    <h3 class="title">Conference Room</h3>#}
+{#                    <span class="subtitle">Life Insurance Policy</span>#}
+{#                </header>#}
+{#                <div class="price">#}
+{#                    <div class="amount">N120</div>#}
+{#                </div>#}
+{#                <button disabled class="subscribe subscribed">Subscribed <i class="fas fa-check"></i></button>#}
+{#                <button disabled class="subscribe unsubscribe">Unsubscribe <i class="fas fa-times"></i></button>#}
+{#            </section>#}
+            </div>
+            <br><br>
+            <h3 class="section-title">Available offers</h3>
+            <div class="offers">
+                <section class="offer">
+                    <header>
+                        <h3 class="title">Conference Room</h3>
+                        <span class="subtitle"></span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N100</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+                <section class="offer">
+                    <header>
+                        <h3 class="title">The Nest</h3>
+                        <span class="subtitle"></span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N200</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+                <section class="offer">
+                    <header>
+                        <h3 class="title"> Dedicated Suite</h3>
+                        <span class="subtitle">Large Team</span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N300</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+                <section class="offer">
+                    <header>
+                        <h3 class="title"> Dedicated Suite </h3>
+                        <span class="subtitle">Small Team</span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N400</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+                <section class="offer">
+                    <header>
+                        <h3 class="title"> Dedicated Suite</h3>
+                        <span class="subtitle">Private Office</span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N500</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+                <section class="offer">
+                    <header>
+                        <h3 class="title"> The White Room</h3>
+                        <span class="subtitle"></span>
+                    </header>
+                    <div class="price">
+                        <div class="amount">N600</div>
+                    </div>
+                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                </section>
+            </div>
+        </div>
+    </main>
+{% endblock %}
+
+{% block script %}
+    <script src="https://js.paystack.co/v1/inline.js"></script>
+
+    <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+
+    <script>
+        var subscribed = '{{subscribed}}';
+        if (subscribed !== 'None') {
+            var offers = $('.offer');
+            console.log(subscribed)
+            for (var i = 0; i < offers.length; i++) {
+
+                if ((offers[i].children[0].children[0].innerText === subscribed) || (offers[i].children[0].children[1].innerText === subscribed)) {
+                    console.dir(offers[i])
+                    console.log(offers[i].children[2])
+                    offers[i].children[2].disabled = 'true';
+                    offers[i].children[2].className += ' subscribed';
+                    if ('{{verified}}' === 'False'){
+                        offers[i].children[2].innerText = 'Pending';
+                    }
+                    else{
+                         offers[i].children[2].innerText = 'Subscribed';
+                    }
+
+                }
+                else if(offers[i].children[2] === undefined){
+                    console.log('')
+                }
+                else {
+                    offers[i].children[2].className = '';
+                    offers[i].children[2].innerText = '';
+                }
+            }
+        }
+        else {
+            var user = JSON.parse({{user|tojson}});
+            var subscribe_btn = $(".subscribe");
+            subscribe_btn.click(function () {
+                console.dir(this);                
+                var plan = this;
+                var planName;
+                if (this.parentElement.children[0].children[1].innerText === ''){
+                    planName = this.parentElement.children[0].children[0].innerText;
+                }
+                else{
+                    planName = this.parentElement.children[0].children[1].innerText;
+                }             
+                var amount = this.previousElementSibling.childNodes[1].innerText;
+                amount = amount.replace('N', '');
+                var handler = PaystackPop.setup({
+                    key: 'pk_test_21f16c5c5bb23742c2b786d80666eddee9880159',
+                    email: user.email,
+                    amount: amount + '00',
+                    ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with areference you generated.Or remove the line entirely so our API will generate one for you
+                    firstname: user.username,
+                    metadata: {
+                        custom_fields: [{
+                            display_name: "Mobile Number",
+                            variable_name: "mobile_number",
+                            value: "+2348012345678"
+                        }]
+                    },
+                    callback: function (response) {
+                        console.log(response);
+                        $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location
+                                .port +
+                            '/receive_ref', {
+                                reference: response.reference,
+                                plan: planName
+                            },
+                            function (data) {
+                                plan.disabled = 'true';
+                                plan.className += ' subscribed';
+                                plan.innerText = 'Pending';
+                                var all_btns = $(".subscribe");
+                                for (var i = 0; i < all_btns.length; i++) {
+                                    if (all_btns[i].disabled !== true) {
+                                        all_btns[i].parentElement.children[2].innerHTML = '';
+                                        all_btns[i].parentElement.children[2].className = ''
+                                    }
+                                }
+                            })
+                    },
+                    onClose: function () {
+                        alert('window closed');
+                    }
+                });
+                handler.openIframe();
+            })
+        }
+    </script>
+{% endblock %}

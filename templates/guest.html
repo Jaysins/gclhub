@@ -1,0 +1,36 @@
+<nav class="navbar bg-dark">
+    <div class="container flex row-lg row-md column-sm space-between fill-v">
+        <div class="logo flex align-center fill-v">
+            <a href="{{url_for('index')}}">
+                LO<span>GO</span>
+            </a>
+        </div>        
+        <div class="flex row-lg row-md column-sm">
+            {% if 'admin_login' not in request.url|string %}
+                <div class="menu fill-v">
+                    <ul class="flex row-md row-lg column-sm fill-v align-center">
+                        <li class="fill-v flex align-center">
+                            <a href="{{url_for('login')}}" class="flex fill-v align-center row-all">Login</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nav-btn flex fill-v align-center ml-2">
+                    <a href="{{url_for('signup')}}" class="btn primary md rounded">Sign up</a>
+                </div>            
+            {% else %}
+                <div class="menu fill-v">
+                    <ul class="flex row-md row-lg column-sm fill-v align-center">
+                        <li class="fill-v flex align-center">
+                            <a href="{{url_for('dashboard')}}" class="flex fill-v align-center row-all">Go back</a>
+                        </li>
+                    </ul>
+                </div>
+                <div class="nav-btn flex fill-v align-center ml-2">
+                    <a href="{{url_for('logout')}}" class="btn primary md rounded">Logout</a>
+                </div>
+            {% endif %}
+        </div>
+        
+    </div>
+    
+</nav>

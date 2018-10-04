@@ -1,0 +1,154 @@
+@import './variables';
+
+$nav-height: 65px;
+$side-bar-width: 220px;
+$side-bar-icon-width: 65px;
+
+.dashboard {
+	width: 100%;
+	height: 100vh;
+	display: flex;
+	flex-flow: row;
+	background-color: #fbfbfb;
+}
+
+.sidebar {
+	background-color: #111226;
+	border-right: 1px solid rgba(0, 0, 0, 0.051);
+	box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+	overflow: hidden;
+	width: $side-bar-icon-width;
+	transition: all 0.3s ease;
+
+	&.open {
+		width: $side-bar-width;
+	}
+
+	.menu-toggler {
+		width: 100%;
+		height: $nav-height;
+		color: #fff;
+		line-height: $nav-height;
+
+		.toggler {
+			border: 0;
+			background-color: transparent;
+			cursor: pointer;
+		}
+	}
+
+	.icon {
+		line-height: $nav-height;
+		display: inline-block;
+		height: 100%;
+		width: $side-bar-icon-width;
+		text-align: center;
+		color: #ccc;
+	}
+
+	.text {
+		display: inline-block;
+		width: $side-bar-width - $side-bar-icon-width - 13px;
+	}
+
+	.menu {
+		display: block;
+		.menu-item {
+			display: block;
+			height: $nav-height;
+			line-height: $nav-height;
+			cursor: pointer;
+			a {
+				display: block;
+				color: #ccc;
+				width: $side-bar-width;
+			}
+			&.active {
+				border-right: 2px solid cornflowerblue;
+			}
+			&:hover {
+				background-color: darken(#111226, 1);
+			}
+		}
+	}
+}
+.content {
+	flex: 1;
+	width: 100%;
+	overflow-y: auto;
+	nav {
+		height: $nav-height;
+		border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+		box-shadow: 0 0 10px rgba(0, 0, 0, 0.041);
+		background-color: #fff;
+	}
+}
+
+main {
+	padding: 10px 0;
+}
+
+.offers {
+	display: grid;
+	grid-template-columns: repeat(3, auto);
+	grid-auto-columns: 200px;
+	grid-auto-flow: row;
+	grid-gap: 20px;
+
+	@include tablet {
+		grid-template-columns: repeat(2, auto);
+	}
+	@include mobile {
+		grid-template-columns: repeat(1, auto);
+	}
+	.offer {
+		padding: 2em 1em;
+		border: 1px solid rgba(0, 0, 0, 0.051);
+		background-color: #fff;
+		box-shadow: 0 0 15px rgba(0, 0, 0, 0.031);
+		text-align: center;
+
+		header {
+			margin-bottom: 20px;
+			.title {
+				color: rgb(53, 99, 185);
+				margin-bottom: 5px;
+				font-weight: 600;
+			}
+			.subtitle {
+				color: #ccc;
+			}
+		}
+
+		.price {
+			.amount {
+				font-weight: bold;
+				font-size: 1.6em;
+				color: #ccc;
+				margin-bottom: 20px;
+			}
+		}
+
+		.subscribe {
+			border: 0;
+			background-color: #f9f9f9;
+			border-radius: 3px;
+			color: #bbb;
+			font-weight: lighter;
+			padding: 0.7em 1.5em;
+			cursor: pointer;
+			&:not(.subscribed):hover {
+				background-color: transparent;
+			}
+			&.subscribed {
+				background-color: #c43e0d;
+				color: #fff;
+				cursor: not-allowed;
+			}
+
+			i {
+				margin-left: 10px;
+			}
+		}
+	}
+}

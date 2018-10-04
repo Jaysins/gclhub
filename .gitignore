@@ -1,0 +1,8 @@
+signup
+.vscode
+__pycache__
+migrations
+README.md
+migrate.py
+gcl
+template

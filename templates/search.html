@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block style %}
+    <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}"> {% endblock %}
+{% block body %} {% include 'auth.html' %} {% endblock %} {% block main %}
+    <main>
+        <div class="container">
+            <br><br>
+            <h3 class="section-title">Results</h3>
+            <div class="offers">
+                <section class="offer">
+                    <form action="{{ url_for('search') }}" method="POST">
+                        <input type="text" name="query">
+                        <br>
+                        <br>
+                        <button class="subscribe">search for user <i class="fas fa-chevron-right" disabled='false'></i>
+                        </button>
+                    </form>
+                </section>
+            </div>
+            <br>
+            <div class="offers">
+                {% for user in user_query %}
+                    <section class="offer">
+						<span class="icon"><a href="{{ url_for('admin_edit', user_id=user.id) }}"><i
+                                class="fas fa-edit"></i></a></span>
+                        <header>
+                            <h3 class="title">Name: {{ user.name }} </h3>
+                            <span class="subtitle">Email address: {{ user.email }} </span>
+                            <br>
+                            <span class="subtitle">Sub Date: {{ status[loop.index-1][0].sub_date.date() }} at {{ status[loop.index-1][0].sub_date.time().strftime('%H:%M') }}
+					</span>
+                            <br>
+                            <span class="subtitle">Due Date: {{ status[loop.index-1][0].due_date.date() }} at {{ status[loop.index-1][0].due_date.time().strftime('%H:%M') }}
+					</span>
+                            <br>
+                        </header>
+                        <div class="price">
+                            <div class="amount">Plan: {{ status[loop.index-1][0].plan }} </div>
+                        </div>
+                        {# <button class="subscribe">Delete <i class="fas fa-chevron-right"></i></button>#}
+                    </section>
+                {% endfor %}
+            </div>
+        </div>
+    </main>
+{% endblock %} {% block script %}
+    <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script> {% endblock %}

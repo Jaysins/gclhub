@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/new.css') }}">
+{% endblock %}
+
+{% block body %}
+
+{% include 'auth.html' %}
+
+{% endblock %}
+
+{% block main %}
+<main>
+    <div class="container">
+        <h3 class="section-title">Requests</h3>
+        <div class="intro offers">
+            {% for user in pending_users %}
+            <section class="offer">
+                <header>
+                    <h3 class="title">Name: {{user.name}} </h3>
+                    <br>
+                    <span class="subtitle">Email Address: {{user.email}} </span>
+                    <br>
+                    <span class="subtitle">Plan: {{ pending[loop.index - 1].plan }} </span>
+                    <br>
+                </header>
+                <button id="{{pending[loop.index-1].reference}}" class="subscribe">Verify Payment<i class="fas fa-chevron-right"></i></button>
+                <button id="{{pending[loop.index-1].reference}}" class="subscribed">Approve<i class="fas fa-chevron-right"></i></button>
+                <a href="mailto:{{user.email}}"><button class="mail">Send a mail<i class="fas fa-chevron-right"></i></button></a>
+            </section>
+            {% endfor %}
+        </div>
+    </div>
+
+</main>
+{% endblock %}
+{% block script %}
+<script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+<script>
+    var btns = $('.subscribe');
+
+    var approve_btns = $('.subscribed');
+
+    approve_btns.click(function () {
+        var btn = this;
+        $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/approve', {
+            reference: this.id
+        }, function (data) {
+            if (data.response === 'success') {
+                btn.innerText = 'Approved';
+                btn.className = 'subscribe subscribed';
+                btn.disabled = 'true';
+            } else if (data.response === 'Not Found') {
+                alert('Reference not valid')
+            } else {
+                alert('an error occured please try again')
+            }
+        })
+    })
+
+    btns.click(function () {
+        var btn = this;
+        $.ajax({
+            url: 'https://api.paystack.co/transaction/verify/' + this.id,
+            type: 'GET',
+            dataType: 'json',
+            success: function () {
+                alert('Successful!');
+            },
+            error: function () {
+                alert('An Error occured, please try again!');
+            },
+            beforeSend: setHeader
+        }).done(function (data) {
+            console.log(data)
+            if (data.message === 'Verification successful') {
+                alert('Payment Verified')
+                btn.innerText = 'Verified';
+                btn.className = 'subscribe subscribed';
+                btn.disabled = 'true';
+            } else {
+                alert('An Error Occured')
+            }
+        });
+
+        function setHeader(xhr) {
+            xhr.setRequestHeader("Authorization", "Bearer sk_test_51c93b8f100a9f323aeb4a3fb96590d4df47ecac");
+        }
+    })
+</script>
+{% endblock %}
