@@ -478,7 +478,7 @@ def request_change():
     if request.method == 'POST':
         if 'email' not in request.form:
             return render_template('get_mail.html', error='refresh browser')
-        email = request.form['email']
+        email = request.form['email'].capitalize()
         check_mail = User.query.filter_by(email=email.capitalize()).first()
         if check_mail:
             confirm(email=email, user_id=check_mail.id, username=check_mail.name, ref='password')
@@ -497,6 +497,7 @@ def change_password(token, user_id):
     """
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
+        print(email)
         get_user = User.query.filter_by(email=email).first()
         print(get_user)
         if request.method == 'POST':
