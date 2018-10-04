@@ -497,7 +497,9 @@ def change_password(token, user_id):
     """
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
-        get_user = User.query.filter_by(id=user_id, email=email).first()
+        print(email)
+        get_user = User.query.filter_by(id=int(user_id), email=email).first()
+        print(get_user)
         if request.method == 'POST':
             form = request.form
             if form['password'] == form['m_password']:
@@ -506,10 +508,11 @@ def change_password(token, user_id):
                 return redirect(url_for('login'))
             else:
                 return render_template('password.html', error='passwords do not match')                
-        if get_user.verified == True:
-            return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')
-        # :Todo return redirect(url_for('error', message='User not found'))
-        return 'User not found'
+        else:
+            if get_user:                
+                return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')        
+            return 'User not found'
+        return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')        
     except SignatureExpired:
         return redirect(url_for('error', message='This link is expired'))
 
