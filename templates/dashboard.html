@@ -148,7 +148,13 @@
                     console.log(offers[i].children[2])
                     offers[i].children[2].disabled = 'true';
                     offers[i].children[2].className += ' subscribed';
-                    offers[i].children[2].innerText = 'Subscribed';
+                    if ('{{verified}}' === 'False'){
+                        offers[i].children[2].innerText = 'Pending';
+                    }
+                    else{
+                         offers[i].children[2].innerText = 'Subscribed';
+                    }
+
                 }
                 else if(offers[i].children[2] === undefined){
                     console.log('')
@@ -198,7 +204,7 @@
                             function (data) {
                                 plan.disabled = 'true';
                                 plan.className += ' subscribed';
-                                plan.innerText = 'Subscribed';
+                                plan.innerText = 'Pending';
                                 var all_btns = $(".subscribe");
                                 for (var i = 0; i < all_btns.length; i++) {
                                     if (all_btns[i].disabled !== true) {

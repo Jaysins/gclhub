@@ -1,0 +1,23 @@
+{% extends 'base.html' %} {% block style %}
+<link rel="stylesheet" href="{{url_for('static', filename='assets/css/style.css')}}">
+<link rel="stylesheet" href="{{url_for('static', filename='assets/css/new.css')}}"> {% endblock %} {% block body %} {% include
+'guest.html' %} {% endblock %} {% block main %}
+<main>
+    <form action="{{url_for('request_change')}}" method="POST" id='form'>
+        <div class="container">
+            <div class="form flex row-lg row-md column-sm form-card">
+                <div class="right expand column-all flex justify-center align-center">
+                    <h3 class="form-title mb-3">Recover Password </h3>
+                    {% if error != '' %}
+                    <span class="alert alert-danger" role='alert' id='error'>{{error}}</span>
+                    {% endif %}
+                    <div class="input-group flex column-all justify-center">
+                        <input type="email" name="email" id="email" placeholder="Email Address">                        
+                        <button class="btn primary md">Send</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+</main>
+{% endblock %}

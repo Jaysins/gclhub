@@ -1,6 +1,14 @@
-{% extends 'base.html' %} {% block style %}
-<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}"> {% endblock %} {% block body
-%} {% include 'auth.html' %} {% endblock %} {% block main %}
+{% extends 'base.html' %} 
+
+{% block style %}
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}"> 
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/new.css') }}"> 
+{% endblock %} 
+
+{% block body%}
+ {% include 'auth.html' %} 
+ {% endblock %}
+  {% block main %}
 <main>
     <div class="container">
         <br><br>
@@ -8,10 +16,14 @@
         <div class="offers">
             <section class="offer">
                 <form action="{{url_for('search')}}" method="POST">
-                    <input type="text" name="query">
-                    <br>
-                    <br>
-                    <button class="subscribe">search for user <i class="fas fa-chevron-right" disabled='false'></i></button>                    
+              <div class="col">
+                    <input class="form-control form-control-lg form-control-borderless" type="search" placeholder="Search for user" name="query">
+                        <br>
+
+                </div>
+                        <div class="col-auto">
+                            <button class="btn btn-lg btn-success" type="submit">Search</button>
+                        </div>
                 </form>
             </section>
         </div>

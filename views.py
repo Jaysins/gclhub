@@ -20,7 +20,7 @@ from flask_mail import Message
 from calendar import monthrange
 
 
-# :Todo implement forgot password
+# :Todo implement forgot password done
 # :Todo implement edit page
 # :Todo confirm email
 
@@ -55,8 +55,6 @@ def add_one_month(t):
     """
     one_day = datetime.timedelta(days=1)
     one_month_later = t + one_day
-    print(one_month_later.month)
-    print(t.month)
     while one_month_later.month == t.month:  # advance to start of next month
         one_month_later += one_day
     target_month = one_month_later.month
@@ -114,20 +112,24 @@ def confirm(email, user_id, username, ref):
 
     :return:
     """
-    token = s.dumps(email, salt='email-confirm')    
-    link = url_for('confirm_email', token=token, _external=True, user_id=user_id) if ref != 'approve' else url_for('login', _external=True)
-    print(ref)
-    if ref == 'signup':        
+    token = s.dumps(email, salt='email-confirm')
+    link = ''
+    print(ref)    
+    if ref == 'signup':
+        link = url_for('confirm_email', token=token, _external=True, user_id=user_id)
         body = f'Dear {username}, welcome please Click to verify your account {link}'
         header = 'Email Confirmation'
+    elif ref == 'password':
+        link = url_for('change_password', token=token, _external=True, user_id=user_id)
+        body = f'Dear {username}, welcome please Click to Change your Password {link}'
+        header = 'Password Change'                        
     elif ref == 'receive':
         body = f'Dear {username}, Your account activation is pending, you will be notified soon as payment is verified'
-        header = 'Acoount Pending'
+        header = 'Acount Pending'
     elif ref == 'approve':
+        link = url_for('login', _external=True)
         body = f'Dear {username}, Your payment has been successfully approved and your account verified,<br> your account is now active as of today{datetime.datetime.now()}, please click {link}'
         header = 'Account Approved'
-    else:
-        body = f'Dear {username}, please Click to verify your email address {link}.'
     # msg = Message(f'{header}', sender='jaysinscars@gmail.com', recipients=[email])
     # msg.body = body
     # mail.send(msg)
@@ -290,7 +292,8 @@ def dashboard():
     history = History.query.filter_by(user_id=user.id).order_by(History.id.desc()).all()    
     print(history)
     return render_template('dashboard.html', user=json.dumps(user_data),
-                           subscribed=check_account.plan if check_account is not None else 'None', history=history)
+                           subscribed=check_account.plan if check_account is not None else 'None', history=history,
+                           verified=check_account.verified)
 
 
 @app.route('/profile')
@@ -470,6 +473,45 @@ def approved():
     ref = 'approve'
     confirm(user.email, user.id, user.name, ref)
     return jsonify({'response': 'success'})
+
+
+@app.route('/request_change', methods=['GET', 'POST'])
+def request_change():
+    if request.method == 'POST':
+        if 'email' not in request.form:
+            return render_template('get_mail.html', error='refresh browser')
+        email = request.form['email']
+        check_mail = User.query.filter_by(email=email).first()
+        if check_mail:
+            confirm(email=email, user_id=check_mail.id, username=check_mail.name, ref='password')
+            return render_template('confirm.html', user_email=check_mail.email, userId=check_mail.id)
+    return render_template('get_mail.html', error='')    
+
+
+@app.route('/change_password/<token>/<user_id>', methods=['GET', 'POST'])
+def change_password(token, user_id):
+    """
+    :param token:
+    :param user_id:
+    :return:
+    """
+    try:
+        email = s.loads(token, salt='email-confirm', max_age=3600)
+        get_user = User.query.filter_by(id=user_id, email=email).first()
+        if request.method == 'POST':
+            form = request.form
+            if form['password'] == form['m_password']:
+                get_user.password = generate_password_hash(form['password'], method='sha256')      
+                db.session.commit()
+                return redirect(url_for('login'))
+            else:
+                return render_template('password.html', error='passwords do not match')                
+        if get_user.verified == True:
+            return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')
+        # :Todo return redirect(url_for('error', message='User not found'))
+        return 'User not found'
+    except SignatureExpired:
+        return redirect(url_for('error', message='This link is expired'))
 
 
 @app.route('/logout')

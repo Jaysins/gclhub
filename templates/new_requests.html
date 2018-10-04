@@ -2,6 +2,7 @@
 
 {% block style %}
 <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/new.css') }}">
 {% endblock %}
 
 {% block body %}
@@ -27,7 +28,7 @@
                 </header>
                 <button id="{{pending[loop.index-1].reference}}" class="subscribe">Verify Payment<i class="fas fa-chevron-right"></i></button>
                 <button id="{{pending[loop.index-1].reference}}" class="subscribed">Approve<i class="fas fa-chevron-right"></i></button>
-                <a href="mailto:{{user.email}}"><button>Send a mail<i class="fas fa-chevron-right"></i></button></a>
+                <a href="mailto:{{user.email}}"><button class="mail">Send a mail<i class="fas fa-chevron-right"></i></button></a>
             </section>
             {% endfor %}
         </div>
