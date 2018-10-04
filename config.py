@@ -1,9 +1,10 @@
 import os
 
-file_path = os.path.abspath(os.getcwd()) + "\service.db"
+# file_path = os.path.abspath(os.getcwd()) + "\service.db"
 
 DEBUG = True
-SQLALCHEMY_DATABASE_URI = 'sqlite:///' + file_path
+# SQLALCHEMY_DATABASE_URI = 'sqlite:///' + file_path
+SQLALCHEMY_DATABASE_URI = os.environ['DATABASE_URL']
 SQLALCHEMY_TRACK_MODIFICATIONS = True
 SECRET_KEY = 'thisisasecret'
 MAIL_USERNAME = "jaysinscars@gmail.com"
