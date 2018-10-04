@@ -497,8 +497,7 @@ def change_password(token, user_id):
     """
     try:
         email = s.loads(token, salt='email-confirm', max_age=3600)
-        print(email)
-        get_user = User.query.filter_by(id=int(user_id), email=email).first()
+        get_user = User.query.filter_by(email=email).first()
         print(get_user)
         if request.method == 'POST':
             form = request.form
