@@ -20,9 +20,18 @@ from flask_mail import Message
 from calendar import monthrange
 
 
-# :Todo implement forgot password done
-# :Todo implement edit page
-# :Todo confirm email
+def check_dates():
+    """
+    cch
+    :return:
+    """
+    accounts = Account.query.filter_by(verified=True).all()
+    for account in accounts:
+        if account.due_date < datetime.datetime.today():
+            user = User.query.filter_by(id=account.user_id).first()
+            confirm(user.email, user.id, user.name, ref='expired', expired=account.due_date, plan=account.plan)
+            db.session.delete(account)            
+    db.session.commit()
 
 
 def change_date():
@@ -107,7 +116,7 @@ def load_user(user_id):
     return User.query.get(int(user_id))
 
 
-def confirm(email, user_id, username, ref):
+def confirm(email, user_id, username, ref, expired=None, plan=None):
     """
 
     :return:
@@ -126,6 +135,9 @@ def confirm(email, user_id, username, ref):
     elif ref == 'receive':
         body = f'Dear {username}, Your account activation is pending, you will be notified soon as payment is verified'
         header = 'Acount Pending'
+    elif ref == 'expired':
+        body = f'Dear {username}, Your subscription to {plan} expired as at {expired}'
+        header = 'Plan Status'
     elif ref == 'approve':
         link = url_for('login', _external=True)
         body = f'Dear {username}, Your payment has been successfully approved and your account verified,<br> your account is now active as of today{datetime.datetime.now()}, please click {link}'
@@ -158,7 +170,7 @@ def signup():
         print(current_user.name)
         return redirect(url_for('dashboard'))
     except AttributeError:            
-        error = ''
+        error = None
         form = RegisterForm(request.form)
         if request.method == 'POST' and form.validate():
             username = form.name.data.title()
@@ -183,6 +195,7 @@ def signup():
                     get_error = errors
                     break
                 error = 'please enter a valid {}'.format(get_error) if 'Match' not in form.errors[get_error][0] else form.errors[get_error][0]
+        print('error', error)
         return render_template('signup.html', form=form, error=error)
 
 
@@ -239,7 +252,7 @@ def confirm_message(user_id):
         return render_template('confirm.html', user_email=user.email, userId=user_id)
     else:
         # return redirect(url_for('error', message=''))
-        return 'error not found'
+        return redirect(url_for('error', message='User not found'))         
 
 
 @app.route('/confirm_email/<token>/<user_id>')
@@ -257,10 +270,15 @@ def confirm_email(token, user_id):
             get_user.verified = True
             db.session.commit()
             return redirect(url_for('login'))
-        # :Todo return redirect(url_for('error', message='User not found'))
-        return 'User not found'
+            message = 'User not found'
+        return redirect(url_for('error', message=message)) 
     except SignatureExpired:
         return redirect(url_for('error', message='This link is expired'))
+
+
+@app.route('/error/<message>')
+def error(message):
+    return render_template('error.html', message=message)
 
 
 @app.route('/refresh')
@@ -277,7 +295,7 @@ def refresh():
         return jsonify({'status': 'success'})
     except AttributeError:
         # :Todo return redirect(url_for('error', message=''))
-        return 'error refresh'
+        return redirect(url_for('error', message='please refresh and try again')) 
 
 
 # :Todo account page=history payments, if subscribed, else
@@ -320,6 +338,7 @@ def admin_login():
                     return redirect(url_for('admin'))
                 else:
                     # TODO: ERROR MESSAGE
+                    
                     return 'admin password fail'
                 # TODO: ERROR MESSAGE
             return 'please logout and try again'
@@ -335,6 +354,7 @@ def admin_login():
 def admin():
     approved_users = []
     approved = Account.query.filter_by(verified=True).order_by(Account.id.desc()).all()
+    check_dates()
     for account in approved:
         approved_users.append(User.query.filter_by(id=account.user_id).first())
     return render_template('admin.html', approved_users=approved_users, approved=approved)
@@ -347,24 +367,10 @@ def search():
     if 'query' not in request.form:
         return 'error'
     query = request.form['query'].capitalize()  
-    account_info = Account.query.all()    
-    # all_dates = [[date.sub_date.date(), dates.sub_date.date()] for date in account_info for dates in account_info]
-    # print(query in all_dates)
-    # print(all_dates)
     status = []
-    user_query = User.query.filter(User.name.like(f'%{query}%') | User.email.like(f'%{query}%')).all()
+    user_query = User.query.join(Account).join(History).filter(User.name.like(f'%{query}%') | User.email.like(f'%{query}%') | Account.plan.like(f'%{query}%') | History.sub_date.like(f'%{query}%')).all()
     for user in user_query:
         status.append(Account.query.filter_by(user_id=user.id).all())
-    print(status)
-    # account_query = Account.query.filter(Account.plan.like(f'%{query}%')).all()
-
-
-        # get_data = [[data.state, data.id, data.room_type, data.rooms, data.price, data.approved]
-        #         for data in Room.query.filter(Room.state.like('%' + request.args['valu'] + '%') | Room.room_type.like(
-        #     '%' + request.args['valu'] + '%') | Room.town.like('%' + request.args['valu'] + '%') | Room.rooms.like(
-        #     '%' + request.args['valu'] + '%'), (Room.approved == True)).order_by(Room.id.desc()).all()]
-    
-    # return render_template('admin.html', approved_users=approved_users, approved=approved)
     return render_template('search.html', user_query=user_query, status=status)
 
 
@@ -418,9 +424,8 @@ def admin_edit(user_id):
     user = User.query.filter_by(id=user_id).first()
     account = Account.query.filter_by(user_id=user_id).first()
     if user is None:   
-        return 'User not found'
-    if request.method == 'POST' and form.validate():
-        print(request.form['time'])
+        return redirect(url_for('error', message='User not found')) 
+    if request.method == 'POST' and form.validate():        
         date =  datetime.datetime.strptime(str(form.date.data), "%Y-%m-%d")
         time = request.form['time']
         if len(time) == 4:
@@ -430,13 +435,19 @@ def admin_edit(user_id):
             hour = int(time[0] + time[1])
             minute = int(time[3] + time[4])
         else:
-            return 'time error'
-        date = date.replace(minute=minute, hour=hour, second=00)        
+            return redirect(url_for('error', message='Time error'))
+        date = date.replace(minute=minute, hour=hour, second=00)     
         due_date = date + datetime.timedelta(hours=int(form.hours.data))
-        manual_account = Account(plan=form.space.data.title(), user_id=user.id, sub_date=date, due_date=due_date, verified=True, manual=True)
-        db.session.add(manual_account)
-        db.session.commit()        
-    return render_template('new_edit.html', account=account, user=user, form=form)
+        user.name =  form.name.data.title()
+        user.email = form.email.data.capitalize()
+        account.plan = form.space.data.title()
+        account.sub_date = date
+        account.due_date = due_date
+        db.session.commit()
+        return redirect(url_for('admin')) 
+    else:
+        print(form.errors)
+    return render_template('new_edit.html', account=account, user=user, form=form)    
 
 
 @app.route('/receive_ref')
@@ -454,14 +465,13 @@ def receive_ref():
 @app.route('/approve')
 def approved():
     print(request.args)
-    get_account = Account.query.filter_by(reference=request.args['reference']).first()
+    get_account = Account.query.filter_by(id=request.args['id']).first()
 
     if get_account is None:
         return jsonify({'response': 'not found'})    
     user = User.query.filter_by(id=get_account.user_id).first()
     get_date = change_date()
     due_date = add_one_month(get_date)
-
     get_account.verified = True
     get_account.sub_date = datetime.datetime.now()
     get_account.due_date = due_date
@@ -484,7 +494,7 @@ def request_change():
             confirm(email=email, user_id=check_mail.id, username=check_mail.name, ref='password')
             return render_template('confirm.html', user_email=check_mail.email, userId=check_mail.id)
         else:
-            return 'invalid email'
+            return redirect(url_for('error', message='Invalid Email')) 
     return render_template('get_mail.html', error='')    
 
 
@@ -511,7 +521,7 @@ def change_password(token, user_id):
         else:
             if get_user:                
                 return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')        
-            return 'User not found'
+            return redirect(url_for('error', message='User not found')) 
         return render_template('password.html', user=get_user.name, token=token, user_id=get_user.id, error='')        
     except SignatureExpired:
         return redirect(url_for('error', message='This link is expired'))

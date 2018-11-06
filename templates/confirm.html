@@ -1,79 +1,107 @@
-{% extends 'base.html' %}
-{% block main %}
-    <main>
-        <div class="confirm">            
-            <p>A confirmation link has been sent to your email address. If you dont have it in your inbox, check
-                spam/junk folder.</p>
-            <button id="resendButton">Resend Activation Link</button>
-            in
-            <span class="countdown-timer">
-                    <span class="min">00</span> :
-                    <span class="sec">00</span>
-                </span>
-        </div>
-        <input type="text" value="{{ user_email }}" disabled hidden id="email">
+<!DOCTYPE html>
+<html lang="en">
 
-    </main>
-{% endblock %}
+<head>
+	<meta charset="utf-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+	<!-- The above 3 meta tags *must* come first in the head; any other head content must come *after* these tags -->
 
+	<title>GCLHub</title>
 
-{% block script %}
-    <script>
-        const resendButton = document.getElementById('resendButton');
+	<!-- Google font -->
+	<link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+	<link href="https://fonts.googleapis.com/css?family=Roboto:400,700" rel="stylesheet">
 
-        let countdown;
+	<!-- Custom stlylesheet -->
+	<link type="text/css" rel="stylesheet" href="../static/assets/css/confirm.css" />
 
-        function timer(seconds) {
-            return new Promise(resolve => {
-                const now = Date.now();
-                const then = now + seconds * 1000;
+	<!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+		  <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
+		  <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
+		<![endif]-->
 
-                countdown = setInterval(function () {
-                    const remainder = Math.round((then - Date.now()) / 1000);
+</head>
 
-                    if (remainder < 0) {
-                        clearInterval(countdown);
-                        resolve();
-                        return
-                    }
+<body>
 
-                    display(remainder);
-                }, 1000);
-            })
-        }
+	<div id="notfound">
+		<div class="notfound">
+			<div class="confirm">
+				<p>A confirmation link has been sent to your email address. If you dont have it in your inbox, check spam/junk folder.</p>
+				<button class="subscribe" id="resendButton">Resend Activation Link</button>
+				in
+				<span class="countdown-timer">
+					<span class="min">00</span> :
+					<span class="sec">00</span>
+				</span>
+			</div>
+			<input type="text" value="{{ user_email }}" disabled hidden id="email">
+		</div>
+	</div>
 
-        function display(seconds) {
-            const minutes = Math.floor(seconds / 60);
-            const secsleft = seconds % 60;
-            const elmin = document.querySelector('.countdown-timer .min');
-            const elsec = document.querySelector('.countdown-timer .sec');
+</body><!-- This templates was made by Colorlib (https://colorlib.com) -->
 
-            elmin.textContent = minutes;
-            elsec.textContent = secsleft;
+<script src="{{url_for('static', filename='assets/js/jquery.min.js')}}"></script>
+<script>
+	const resendButton = document.getElementById('resendButton');
 
-        }
+	let countdown;
 
-        var count = 3;
-        window.addEventListener('load', function () {
-            resendButton.setAttribute('disabled', true);
+	function timer(seconds) {
+		return new Promise(resolve => {
+			const now = Date.now();
+			const then = now + seconds * 1000;
 
-            timer(count).then(function () {
-                resendButton.removeAttribute('disabled');
-            })
-        });
-        resendButton.addEventListener('click', function () {
-            var email = document.getElementById('email');
-            $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/refresh', {
-                email: email.value,
-            }, function (data) {
-                console.log(data)
-            });
-            resendButton.setAttribute('disabled', true);
+			countdown = setInterval(function () {
+				const remainder = Math.round((then - Date.now()) / 1000);
 
-            timer(count += 7).then(function () {
-                resendButton.removeAttribute('disabled');
-            });
+				if (remainder < 0) {
+					clearInterval(countdown);
+					resolve();
+					return
+				}
 
-        })
-    </script>
-{% endblock %}
+				display(remainder);
+			}, 1000);
+		})
+	}
+
+	function display(seconds) {
+		const minutes = Math.floor(seconds / 60);
+		const secsleft = seconds % 60;
+		const elmin = document.querySelector('.countdown-timer .min');
+		const elsec = document.querySelector('.countdown-timer .sec');
+
+		elmin.textContent = minutes;
+		elsec.textContent = secsleft;
+
+	}
+
+	var count = 3;
+	window.addEventListener('load', function () {
+		resendButton.setAttribute('disabled', true);
+
+		timer(count).then(function () {
+			resendButton.removeAttribute('disabled');
+		})
+	});
+	resendButton.addEventListener('click', function () {
+		var email = document.getElementById('email');
+		$.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/refresh', {
+			email: email.value,
+		}, function (data) {
+			console.log(data)
+		});
+		resendButton.setAttribute('disabled', true);
+
+		timer(count += 7).then(function () {
+			resendButton.removeAttribute('disabled');
+		});
+
+	})
+</script>
+
+</html>

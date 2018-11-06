@@ -1,0 +1,79 @@
+{% extends 'base.html' %}
+{% block main %}
+    <main>
+        <div class="confirm">            
+            <p>A confirmation link has been sent to your email address. If you dont have it in your inbox, check
+                spam/junk folder.</p>
+            <button id="resendButton">Resend Activation Link</button>
+            in
+            <span class="countdown-timer">
+                    <span class="min">00</span> :
+                    <span class="sec">00</span>
+                </span>
+        </div>
+        <input type="text" value="{{ user_email }}" disabled hidden id="email">
+
+    </main>
+{% endblock %}
+
+
+{% block script %}
+    <script>
+        const resendButton = document.getElementById('resendButton');
+
+        let countdown;
+
+        function timer(seconds) {
+            return new Promise(resolve => {
+                const now = Date.now();
+                const then = now + seconds * 1000;
+
+                countdown = setInterval(function () {
+                    const remainder = Math.round((then - Date.now()) / 1000);
+
+                    if (remainder < 0) {
+                        clearInterval(countdown);
+                        resolve();
+                        return
+                    }
+
+                    display(remainder);
+                }, 1000);
+            })
+        }
+
+        function display(seconds) {
+            const minutes = Math.floor(seconds / 60);
+            const secsleft = seconds % 60;
+            const elmin = document.querySelector('.countdown-timer .min');
+            const elsec = document.querySelector('.countdown-timer .sec');
+
+            elmin.textContent = minutes;
+            elsec.textContent = secsleft;
+
+        }
+
+        var count = 3;
+        window.addEventListener('load', function () {
+            resendButton.setAttribute('disabled', true);
+
+            timer(count).then(function () {
+                resendButton.removeAttribute('disabled');
+            })
+        });
+        resendButton.addEventListener('click', function () {
+            var email = document.getElementById('email');
+            $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/refresh', {
+                email: email.value,
+            }, function (data) {
+                console.log(data)
+            });
+            resendButton.setAttribute('disabled', true);
+
+            timer(count += 7).then(function () {
+                resendButton.removeAttribute('disabled');
+            });
+
+        })
+    </script>
+{% endblock %}

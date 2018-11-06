@@ -26,8 +26,10 @@
                     <span class="subtitle">Plan: {{ pending[loop.index - 1].plan }} </span>
                     <br>
                 </header>
-                <button id="{{pending[loop.index-1].reference}}" class="subscribe">Verify Payment<i class="fas fa-chevron-right"></i></button>
-                <button id="{{pending[loop.index-1].reference}}" class="subscribed">Approve<i class="fas fa-chevron-right"></i></button>
+<button id="{{pending[loop.index-1].id}}" class="subscribe" data-reference="{{pending[loop.index-1].reference}}">Verify
+    Payment<i class="fas fa-chevron-right"></i></button>
+<button id="{{pending[loop.index-1].id}}" class="subscribed" data-reference="{{pending[loop.index-1].reference}}"><i
+        id='spin'></i>Approve<i class="fas fa-chevron-right"></i></button>
                 <a href="mailto:{{user.email}}"><button class="mail">Send a mail<i class="fas fa-chevron-right"></i></button></a>
             </section>
             {% endfor %}
@@ -44,9 +46,12 @@
     var approve_btns = $('.subscribed');
 
     approve_btns.click(function () {
-        var btn = this;
-        $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/approve', {
-            reference: this.id
+        var spin = document.querySelector('#spin')
+        var btn = this;        
+        btn.disabled = true;
+        spin.className = 'fa fa-spinner fa-spin';
+        $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location.port + '/approve', {            
+            id: this.id
         }, function (data) {
             if (data.response === 'success') {
                 btn.innerText = 'Approved';
@@ -54,16 +59,22 @@
                 btn.disabled = 'true';
             } else if (data.response === 'Not Found') {
                 alert('Reference not valid')
+                spin.className = 'subscribed';
             } else {
                 alert('an error occured please try again')
+                spin.className = 'subscribed';
             }
         })
     })
-
-    btns.click(function () {
+    btns.click(function () {        
         var btn = this;
+        let ref = this.dataset['reference']
+        if (ref === 'bankPay'){
+            alert('Bank Payment');
+            return;
+        }
         $.ajax({
-            url: 'https://api.paystack.co/transaction/verify/' + this.id,
+            url: 'https://api.paystack.co/transaction/verify/' + ref,
             type: 'GET',
             dataType: 'json',
             success: function () {

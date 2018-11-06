@@ -1,6 +1,241 @@
 {% extends 'base.html' %}
 {% block style %}
     <link rel="stylesheet" href="{{ url_for('static', filename='assets/css/dashboard.css') }}">
+    <style>
+.btn {
+display: inline-block;
+font-weight: 400;
+text-align: center;
+white-space: nowrap;
+vertical-align: middle;
+-webkit-user-select: none;
+-moz-user-select: none;
+-ms-user-select: none;
+user-select: none;
+border: 1px solid transparent;
+padding: .5rem .75rem;
+font-size: 1rem;
+line-height: 1.25;
+border-radius: .25rem;
+transition: all .15s ease-in-out
+}
+
+.btn:focus,
+.btn:hover {
+text-decoration: none
+}
+
+.btn.focus,
+.btn:focus {
+outline: 0;
+box-shadow: 0 0 0 3px rgba(0, 123, 255, .25)
+}
+
+.btn-primary {
+color: #fff;
+background-color: #007bff;
+border-color: #007bff
+}
+
+.btn-primary:hover {
+color: #fff;
+background-color: #0069d9;
+border-color: #0062cc
+}
+
+.btn-primary.focus,
+.btn-primary:focus {
+box-shadow: 0 0 0 3px rgba(0, 123, 255, .5)
+}
+
+.btn-primary.active,
+.btn-primary:active,
+.show>.btn-primary.dropdown-toggle {
+background-color: #0069d9;
+background-image: none;
+border-color: #0062cc
+}
+
+.btn-secondary {
+color: #fff;
+background-color: #868e96;
+border-color: #868e96
+}
+
+.btn-secondary:hover {
+color: #fff;
+background-color: #727b84;
+border-color: #6c757d
+}
+
+.btn-secondary.focus,
+.btn-secondary:focus {
+box-shadow: 0 0 0 3px rgba(134, 142, 150, .5)
+}
+
+.close {
+float: right;
+font-size: 1.5rem;
+font-weight: 700;
+line-height: 1;
+color: #000;
+text-shadow: 0 1px 0 #fff;
+opacity: .5
+}
+
+.close:focus,
+.close:hover {
+color: #000;
+text-decoration: none;
+opacity: .75
+}
+
+button.close {
+padding: 0;
+background: 0 0;
+border: 0;
+-webkit-appearance: none
+}
+
+.modal-open {
+overflow: hidden
+}
+
+.modal {
+position: fixed;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 1050;
+display: none;
+overflow: hidden;
+outline: 0
+}
+
+.modal.fade .modal-dialog {
+transition: -webkit-transform .3s ease-out;
+transition: transform .3s ease-out;
+transition: transform .3s ease-out, -webkit-transform .3s ease-out;
+-webkit-transform: translate(0, -25%);
+transform: translate(0, -25%)
+}
+
+.modal.show .modal-dialog {
+-webkit-transform: translate(0, 0);
+transform: translate(0, 0)
+}
+
+.modal-open .modal {
+overflow-x: hidden;
+overflow-y: auto
+}
+
+.modal-dialog {
+position: relative;
+width: auto;
+margin: 10px
+}
+
+.modal-content {
+position: relative;
+display: -ms-flexbox;
+display: flex;
+-ms-flex-direction: column;
+flex-direction: column;
+background-color: #fff;
+background-clip: padding-box;
+border: 1px solid rgba(0, 0, 0, .2);
+border-radius: .3rem;
+outline: 0
+}
+
+.modal-backdrop {
+position: fixed;
+top: 0;
+right: 0;
+bottom: 0;
+left: 0;
+z-index: 1040;
+background-color: #000
+}
+
+.modal-backdrop.fade {
+opacity: 0
+}
+
+.modal-backdrop.show {
+opacity: .5
+}
+
+.modal-header {
+display: -ms-flexbox;
+display: flex;
+-ms-flex-align: center;
+align-items: center;
+-ms-flex-pack: justify;
+justify-content: space-between;
+padding: 15px;
+border-bottom: 1px solid #e9ecef
+}
+
+.modal-title {
+margin-bottom: 0;
+line-height: 1.5
+}
+
+.modal-body {
+position: relative;
+-ms-flex: 1 1 auto;
+flex: 1 1 auto;
+padding: 15px
+}
+
+.modal-footer {
+display: -ms-flexbox;
+display: flex;
+-ms-flex-align: center;
+align-items: center;
+-ms-flex-pack: end;
+justify-content: flex-end;
+padding: 15px;
+border-top: 1px solid #e9ecef
+}
+
+.modal-footer>:not(:first-child) {
+margin-left: .25rem
+}
+
+.modal-footer>:not(:last-child) {
+margin-right: .25rem
+}
+
+.modal-scrollbar-measure {
+position: absolute;
+top: -9999px;
+width: 50px;
+height: 50px;
+overflow: scroll
+}
+
+@media (min-width:576px) {
+.modal-dialog {
+max-width: 500px;
+margin: 30px auto
+}
+
+.modal-sm {
+max-width: 300px
+}
+}
+
+@media (min-width:992px) {
+.modal-lg {
+max-width: 800px
+}
+}
+
+    </style>
 {% endblock %}
 
 {% block body %}
@@ -74,7 +309,7 @@
                     <div class="price">
                         <div class="amount">N100</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
                 <section class="offer">
                     <header>
@@ -84,7 +319,7 @@
                     <div class="price">
                         <div class="amount">N200</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
                 <section class="offer">
                     <header>
@@ -94,7 +329,7 @@
                     <div class="price">
                         <div class="amount">N300</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
                 <section class="offer">
                     <header>
@@ -104,7 +339,7 @@
                     <div class="price">
                         <div class="amount">N400</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
                 <section class="offer">
                     <header>
@@ -114,7 +349,7 @@
                     <div class="price">
                         <div class="amount">N500</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
                 <section class="offer">
                     <header>
@@ -124,8 +359,31 @@
                     <div class="price">
                         <div class="amount">N600</div>
                     </div>
-                    <button class="subscribe">Subscribe <i class="fas fa-chevron-right"></i></button>
+                    <button class="subscribe"><i id='spin'></i>Subscribe <i class="fas fa-chevron-right"></i></button>
                 </section>
+            </div>
+        </div>
+        <button type="button" data-toggle="modal" data-target="#paymentMethod" id="callPaymentMethod">
+        </button>
+        <div class="modal fade" id="paymentMethod" tabindex="-1" role="dialog" aria-labelledby="paymentMethodTitle"
+            aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h5 class="modal-title" id="exampleModalLongTitle">Payment Method</h5>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close" id='exit'>
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        Choose Preferred Payment Method
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal" id="close">Close</button>
+                        <button type="button" class="btn btn-primary" id='pPaystack'>Pay With Paystack</button>
+                        <button type="button" class="btn btn-primary" id='pBank'>Pay With Bank</button>
+                    </div>
+                </div>
             </div>
         </div>
     </main>
@@ -135,8 +393,24 @@
     <script src="https://js.paystack.co/v1/inline.js"></script>
 
     <script src="{{ url_for('static', filename='assets/js/dashboard.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/popper.min.js') }}"></script>
+    <script src="{{ url_for('static', filename='assets/js/bootstrap.min.js') }}"></script>
 
     <script>
+        function doSubscribe(plan, closeButton) {
+            closeButton.click()
+            plan.disabled = false;
+            plan.className += ' subscribed';
+            plan.innerText = 'Pending';
+            var all_btns = $(".subscribe");
+            all_btns.map(btn => {
+            if (all_btns[btn].disabled !== false) {                
+                all_btns[btn].parentElement.children[2].innerHTML = '';
+                all_btns[btn].parentElement.children[2].className = '';
+            }
+            })
+            plan.disabled = true;
+        }
         var subscribed = '{{subscribed}}';
         if (subscribed !== 'None') {
             var offers = $('.offer');
@@ -166,59 +440,96 @@
             }
         }
         else {
+            var spin = document.querySelector('#spin')
             var user = JSON.parse({{user|tojson}});
             var subscribe_btn = $(".subscribe");
+            var payed = false;
             subscribe_btn.click(function () {
-                console.dir(this);                
                 var plan = this;
                 var planName;
-                if (this.parentElement.children[0].children[1].innerText === ''){
-                    planName = this.parentElement.children[0].children[0].innerText;
-                }
-                else{
-                    planName = this.parentElement.children[0].children[1].innerText;
-                }             
-                var amount = this.previousElementSibling.childNodes[1].innerText;
-                amount = amount.replace('N', '');
-                var handler = PaystackPop.setup({
-                    key: 'pk_test_21f16c5c5bb23742c2b786d80666eddee9880159',
-                    email: user.email,
-                    amount: amount + '00',
-                    ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with areference you generated.Or remove the line entirely so our API will generate one for you
-                    firstname: user.username,
-                    metadata: {
-                        custom_fields: [{
-                            display_name: "Mobile Number",
-                            variable_name: "mobile_number",
-                            value: "+2348012345678"
-                        }]
-                    },
-                    callback: function (response) {
-                        console.log(response);
-                        $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location
-                                .port +
-                            '/receive_ref', {
-                                reference: response.reference,
-                                plan: planName
-                            },
-                            function (data) {
-                                plan.disabled = 'true';
-                                plan.className += ' subscribed';
-                                plan.innerText = 'Pending';
-                                var all_btns = $(".subscribe");
-                                for (var i = 0; i < all_btns.length; i++) {
-                                    if (all_btns[i].disabled !== true) {
-                                        all_btns[i].parentElement.children[2].innerHTML = '';
-                                        all_btns[i].parentElement.children[2].className = ''
-                                    }
-                                }
-                            })
-                    },
-                    onClose: function () {
-                        alert('window closed');
+                subscribe_btn.map(btn => {
+                subscribe_btn[btn].disabled=true;
+                })
+                document.querySelector('#callPaymentMethod').click();
+                var closeButton = document.querySelector('#close')
+                var exitButton = document.querySelector('#exit')
+                document.querySelector('#pPaystack').onclick = () => {
+                    if (plan.parentElement.children[0].children[1].innerText === ''){
+                        planName = plan.parentElement.children[0].children[0].innerText;
                     }
-                });
-                handler.openIframe();
+                    else{
+                        planName = plan.parentElement.children[0].children[1].innerText;
+                    }             
+                    var amount = plan.previousElementSibling.childNodes[1].innerText;
+                    amount = amount.replace('N', '');
+                    var handler = PaystackPop.setup({
+                        key: 'pk_test_21f16c5c5bb23742c2b786d80666eddee9880159',
+                        email: user.email,
+                        amount: amount + '00',
+                        ref: '' + Math.floor((Math.random() * 1000000000) + 1), // generates a pseudo-unique reference. Please replace with areference you generated.Or remove the line entirely so our API will generate one for you
+                        firstname: user.username,
+                        metadata: {
+                            custom_fields: [{
+                                display_name: "Mobile Number",
+                                variable_name: "mobile_number",
+                                value: "+2348012345678"
+                            }]
+                        },
+                        callback: function (response) {
+                            console.log(response);
+                            payed = true
+                            $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location
+                                    .port +
+                                '/receive_ref', {
+                                    reference: response.reference,
+                                    plan: planName
+                                }, doSubscribe(plan, closeButton))
+                        },
+                        onClose: function () {
+                            alert('window closed');
+                        }
+                    });
+                    handler.openIframe();
+                }
+                document.querySelector('#pBank').onclick = () => {
+                    if (plan.parentElement.children[0].children[1].innerText === ''){
+                        planName = plan.parentElement.children[0].children[0].innerText;
+                    }
+                    else{
+                        planName = plan.parentElement.children[0].children[1].innerText;
+                    }
+                    payed = true;
+                    $.getJSON(window.location.protocol + '//' + document.domain + ':' + window.location
+                    .port +
+                    '/receive_ref', {
+                    reference: 'bankPay',
+                    plan: planName
+                    }, doSubscribe(plan, closeButton)) 
+                }
+                closeButton.onclick = () =>{
+                    console.log('close clicked')
+                    if (payed === false){
+                        subscribe_btn.map(btn => {
+                        subscribe_btn[btn].disabled=false;
+                        })
+                    }
+                }
+                exitButton.onclick = () =>{
+                    console.log('exit clicked')
+                    if (payed === false){
+                        subscribe_btn.map(btn => {
+                        subscribe_btn[btn].disabled=false;
+                        })
+                    }
+                }
+                console.log(payed)
+                console.log('aoako')
+                    if (payed === false){
+                        subscribe_btn.map(btn => {
+                        subscribe_btn[btn].disabled=false;
+                        })
+                    }
+
             })
         }
     </script>

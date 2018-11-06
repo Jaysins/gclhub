@@ -23,14 +23,19 @@
                 </div>
                 <div class="right expand column-all flex justify-center align-center">
                     <h3 class="form-title mb-3">Login<br> <span>Access your account.</span> </h3>
-                    {% if error != '' %}
-                        <span class="alert alert-danger" role='alert'>{{error}}</span>
+                     {% if error == None or error == ''%}
+                    <span id="error" class="" role="alert"></span>
+                    {% else %}
+                    <span id="error" class="alert alert-danger" role="alert">{{error}}</span>
                     {% endif %}
                     <div class="input-group flex column-all justify-center">
                         {{ form.csrf_token }}
                         {{form.name(placeholder='Email Address or Name', required=true)}}
                         {{form.password(placeholder='Password', required=true)}}
-                        <button class="btn primary md">Login</button>
+                        <button id="load" class="btn primary md">
+                            <i id='spin'></i>
+                            Login
+                        </button>
                     </div>
                     <h4>or signup <a class="form-title mb-3" href="{{url_for('signup')}}">here</a></span>
                     <h4>forgot password? click <a class="form-title mb-3" href="{{url_for('request_change')}}">here</a></span>
@@ -42,4 +47,6 @@
 </main>
 {% endblock %}
 
-
+{% block script %}
+<script src="{{url_for('static', filename='assets/js/signup.js')}}"></script> 
+{% endblock %}

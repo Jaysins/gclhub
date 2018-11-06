@@ -5,7 +5,7 @@ APP.py
 """
 
 from flask import Flask
-from flask_login import current_user, LoginManager
+from flask_login import LoginManager
 from flask_sqlalchemy import SQLAlchemy
 from flask_mail import Mail
 from itsdangerous import URLSafeTimedSerializer
@@ -15,22 +15,6 @@ app = Flask(__name__)
 app.config.from_pyfile('config.py')
 
 mail = Mail(app)
-# from flask import Flask, render_template
-# from flask_nav import Nav
-# from flask_nav.elements import *
-
-# nav = Nav()
-
-# # registers the "top" menubar
-# nav.register_element('top', Navbar(
-#     View('Home', 'index'),
-#     View('Admin', 'admin'),
-# ))
-
-
-# # [...] (view definitions)
-
-# nav.init_app(app)
 
 
 s = URLSafeTimedSerializer(app.config['SECRET_KEY'])

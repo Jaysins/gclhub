@@ -1,5 +1,9 @@
-console.log('okay seen')
+var btn = document.getElementById('load');
+var spin = document.getElementById('spin');
+
 $('#form').submit(function (e) {
+    btn.disabled = true;
+    spin.className = 'fa fa-spinner fa-spin';    
     var form_data = {
         name: $('#name')[0].value,
         email: $('#email')[0].value,
@@ -8,6 +12,7 @@ $('#form').submit(function (e) {
         date: $('#date')[0].value,
         time: $('#time')[0].value,
     }
+    var willReturn = true;
 
     for (i = 0; i < Object.keys(form_data).length; i++) {        
         if (form_data[i] === '') {
@@ -15,7 +20,7 @@ $('#form').submit(function (e) {
         }
         console.log(form_data[i])
     }
-    return false
+    return willReturn
 
     var time = form_data.time;
     if (time.length > 5) {
@@ -23,7 +28,7 @@ $('#form').submit(function (e) {
         alert('ohh and please right click and click on inspect element.')
         console.log('fuck you!!!!!!')
 
-        return false
+        return willReturn
     }
 
     for (var i = 0; i < time.length; i++) {
@@ -31,10 +36,10 @@ $('#form').submit(function (e) {
             alert('Enter valid time!!')
             alert('ohh and please right click and click on inspect element.')
             console.log('fuck you!!!!!!')
-            return false
+            return willReturn
         }
     }
-    return true
+    return willReturn
 })
 var timepicker = new TimePicker('time', {
     lang: 'en',
