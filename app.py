@@ -31,4 +31,4 @@ from views import *
 
 if __name__ == '__main__':    
     # app.run(host='192.168.1.24')
-    app.run()
+    app.run(port='8080')

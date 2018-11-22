@@ -142,9 +142,9 @@ def confirm(email, user_id, username, ref, expired=None, plan=None):
         link = url_for('login', _external=True)
         body = f'Dear {username}, Your payment has been successfully approved and your account verified,<br> your account is now active as of today{datetime.datetime.now()}, please click {link}'
         header = 'Account Approved'
-    msg = Message(f'{header}', sender='jaysinscars@gmail.com', recipients=[email])
-    msg.body = body
-    mail.send(msg)
+    # msg = Message(f'{header}', sender='jaysinscars@gmail.com', recipients=[email])
+    # msg.body = body
+    # mail.send(msg)
     print(body)
     print(link)
 
